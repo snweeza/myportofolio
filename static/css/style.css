@@ -42,7 +42,7 @@ body {
 
 .site-header .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
     align-items: center;
     padding: 1.5rem 1.25rem 0 1.5rem;
 }
@@ -54,7 +54,7 @@ body {
     text-decoration: none;
 }
 
-.site-header nav{
+.site-header nav {
     display: flex;
 }
 
@@ -93,7 +93,16 @@ body {
         "identity photo"
         "details photo";
     gap: 1.25rem 3rem;
+    /* background: var(--background-container);
+    border-radius: var(--radius);
+    box-shadow: 1px 1px 0 white,
+                -1px -1px 0 white,
+                0 2px 10px 0 rgb(83, 122, 143); */
+}
+
+.hero-block {
     background: var(--background-container);
+    width: 1080px;
     border-radius: var(--radius);
     box-shadow: 1px 1px 0 white,
                 -1px -1px 0 white,
@@ -208,36 +217,15 @@ body {
     border-top: 1px solid var(--line);
 }
 
-/* section 2 display flexbox: kiri sidebar, kanan slide */
-.section-2 {
-    display: flex;
-    /* flex-wrap: wrap; */
-}
-
-/* slidebar */
-aside {
-    width: 300px;
-    height: 300px;
-    flex-shrink: 0;
-}
-
-/* slide */
-.section-2 .slide {
-    flex-grow: 1;
-    background: blue;
-}
-
-.sidebar-block{
+.section-2 .block {
     background: rgb(159, 217, 251);
     border-radius: var(--radius);
-    width: 280px;
-    height: 300px;
     box-shadow: 1px 1px 0 rgb(154, 255, 255),
                 -1px -1px 0 rgb(140, 245, 255),
                 0 2px 10px 0 rgb(125, 184, 215);
 }
 
-.sidebar-judul {
+.section-2 .header {
     border-bottom: 1px solid var(--line);
     background-image: var(--background-header);
     border-radius: 16px 16px 0 0;
@@ -246,22 +234,21 @@ aside {
     font-size: 0.85rem;
 }
 
-.sidebar-judul h3{
+.section-2 .header h3{
     text-transform: uppercase;
-    text-align: center;
     font-weight: 700;
     text-shadow:rgb(2, 102, 163);
 }
 
-/* container button */
-.sidebar-isi{
+/* container summary*/
+.section-2-experience {
     display: flex;
     flex-direction: column;
-    margin: 10px 10px;
+    margin: 10px;
     gap: 5px;
 }
 
-/* text button */
+/* text summary */
 .btn {
     background: rgb(182, 226, 251);
     border: none;
@@ -276,33 +263,97 @@ aside {
     transition: background-color 0.2s ease;
 }
 
-/* text button hover */
+/* text summary hover */
 .btn:hover {
     background: rgb(165, 222, 255);
 }
 
 /* text footer di bawah */
-.sidebar-footer p{
+.section-2 .footer p {
     color: var(--accent-dark);
     font-size: 12px;
-    text-align: center;
-    padding: 5px 30px;
+    padding: 5px 30px 15px;
+}
+
+/* details */
+.isi-summary {
+    display: flex;
+    margin: 0 auto;
+    padding: 10px 80px;
+}
+
+.activity-photo {
+    width: 200px;
+    border: 3px solid rgb(64, 123, 132);
+    box-shadow: 0 2px 100px 0 rgb(166, 222, 255);
+}
+
+.experience-desc {
+    flex-grow: 1;
+    padding: 10px 30px;
+    color: var(--accent-dark);
+    text-align: justify;
 }
 
 @media (max-width: 600px) {
     .hero-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
+            "header"
             "identity"
             "photo"
             "details";
+        
     }
 
     .hero-photo {
-        max-width: 220px;
+        max-width: 350px;
+    }
+
+    .brand {
+        margin-right:50px;
     }
 
     .social-links {
         justify-content: flex-start;
+    }
+
+    .folder-nav {
+        padding: 1px 10px 1px 10px;
+        border-radius: 10px;
+    }
+
+    .container {
+        padding: 0 30px;
+    }
+
+    .hero-kicker {
+        font-size: 0.65rem;
+    }
+
+    .hero .container {
+        padding: 0 0;
+    }
+
+    .hero-kicker {
+        font-size: 0.65rem;
+    }
+
+    .hero-block {
+        max-width: 350px;
+    }
+
+    .isi-summary {
+        padding: 10px 0px;
+        flex-wrap: wrap;
+    }
+
+    .experience-photo {
+        display: block;
+        margin: 0 auto;
+    }
+
+    .experience-desc {
+        font-size: 12px;
     }
 }

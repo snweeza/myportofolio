@@ -5,41 +5,46 @@
 }
 
 :root {
-    --ink: #1c1917;
-    --paper: #faf6f0;
-    --accent: #632f52;
-    --accent-dark: #692769;
-    --line: #e3d9c9;
-    --text-muted: #6b6459;
-    --radius: 4px;
+    --ink: #ffe4c2;
+    --paper: linear-gradient(to bottom right, #7fc5ec 30%, #7ddad5 70%);
+    --background-header: linear-gradient(to bottom, rgb(119, 177, 218), rgb(37, 148, 228), rgb(1, 121, 195));
+    --background-container: linear-gradient(to bottom right, #afd8ed, rgb(169, 231, 239));
+    --accent: #069181;
+    --accent-dark: #274b69;
+    --line: #a0d4dd;
+    --text-muted: #607a97;
+    --radius: 15px;
 }
 
 body {
-    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "JetBrains Mono" ,-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
-    background-color: var(--paper);
+    background: var(--paper);
     line-height: 1.6;
 }
 
-h1, .brand {
+.brand {
     font-family: "Space Grotesk", -apple-system, sans-serif;
+    padding-bottom: 20px;
+    margin-right: 610px;
 }
 
 .container {
-    max-width: 960px;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 0 1.5rem;
 }
 
 .site-header {
-    border-bottom: 1px solid var(--line);
+    border-bottom: 4px solid var(--line);
+    background: var(--background-header);
+    box-shadow: 0 2px 100px 0 rgb(166, 222, 255); 
 }
 
 .site-header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.25rem 1.5rem;
+    padding: 1.5rem 1.25rem 0 1.5rem;
 }
 
 .brand {
@@ -49,50 +54,84 @@ h1, .brand {
     text-decoration: none;
 }
 
-.site-header nav {
+.site-header nav{
     display: flex;
-    gap: 2rem;
 }
 
+/* textnya */
 .site-header nav a {
     color: var(--ink);
+    text-shadow: 2px 1px 7px rgb(1, 1, 1);
     text-decoration: none;
     font-size: 0.95rem;
 }
 
+/* bagian profile, experience */
+.folder-nav {
+    background: linear-gradient(to bottom, rgb(119, 177, 218) 3%, rgb(37, 148, 228));
+    border-radius: 10px 10px 0 0;
+    padding: 14px 17px 15px 15px;
+    box-shadow: 1px -1px 2px rgb(160, 195, 219);
+    transition: background-color 2s ease;
+}
+
+/* hover */
+.folder-nav:hover {
+    background: linear-gradient(to bottom, rgb(171, 243, 242), rgb(17, 191, 255));
+}
+
+
 .hero {
-    padding: 4.5rem 0 5rem;
+    padding: 3rem 0 4rem;
 }
 
 .hero-grid {
     display: grid;
     grid-template-columns: 1.3fr 1fr;
     grid-template-areas:
+        "header header"
         "identity photo"
-        "details  photo";
-    gap: 1.25 rem 3rem;
+        "details photo";
+    gap: 1.25rem 3rem;
+    background: var(--background-container);
+    border-radius: var(--radius);
+    box-shadow: 1px 1px 0 white,
+                -1px -1px 0 white,
+                0 2px 10px 0 rgb(83, 122, 143);
 }
 
-.hero-identity {
-    grid-area: identity;
-}
-
-.hero-details {
-    grid-area: details;
+.hero-header {
+    grid-area: header;
+    border-bottom: 4px solid var(--line);
+    background-image: var(--background-header);
+    border-radius: 16px 16px 0 0;
+    padding: 10px 30px;
+    box-shadow: 0 2px 100px 0 rgb(166, 222, 255); 
 }
 
 .hero-kicker {
     font-size: 0.85rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--accent-dark);
+    color: var(--ink);
     font-weight: 700;
-    margin-bottom: 0.75rem;
+}
+
+
+.hero-identity {
+    grid-area: identity;
+    padding: 10px 30px;
+}
+
+.hero-details {
+    grid-area: details;
+    padding: 10px 30px;
 }
 
 .hero-identity h1 {
     font-size: clamp(3rem, 7vw, 5rem);
     line-height: 0.95;
+    color: var(--accent)
 }
 
 .bio {
@@ -117,6 +156,7 @@ h1, .brand {
 
 .meta-row dd {
     font-weight: 600;
+    color: var(--accent-dark);
 }
 
 .social-links {
@@ -130,32 +170,23 @@ h1, .brand {
     font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
-    color: var(--paper);
-    background-color: var(--ink);
+    color: white;
+    background-color: var(--accent);
     border-radius: var(--radius);
     padding: 0.5rem 1.1rem;
     transition: background-color 0.2s ease;
+    margin-bottom: 0.75rem;
 }
 
 .social-link:hover {
-    background-color: var(--accent);
+    background-color: #04695d;
 }
 
 .hero-photo {
     grid-area: photo;
     align-self: center;
     position: relative;
-}
-
-.photo-block {
-    position: absolute;
-    top: 1.25rem;
-    left: 1.25rem;
-    width: 100%;
-    height: 100%;
-    background-color: var(--accent);
-    border-radius: var(--radius);
-    z-index: 0;
+    padding: 10px 40px;
 }
 
 .avatar {
@@ -166,7 +197,8 @@ h1, .brand {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: var(--radius);
-    border: 3px solid var(--ink);
+    border: 3px solid rgb(64, 123, 132);
+    box-shadow: 0 2px 100px 0 rgb(166, 222, 255);
 }
 
 .site-footer {
@@ -174,6 +206,87 @@ h1, .brand {
     color: var(--text-muted);
     font-size: 0.85rem;
     border-top: 1px solid var(--line);
+}
+
+/* section 2 display flexbox: kiri sidebar, kanan slide */
+.section-2 {
+    display: flex;
+    /* flex-wrap: wrap; */
+}
+
+/* slidebar */
+aside {
+    width: 300px;
+    height: 300px;
+    flex-shrink: 0;
+}
+
+/* slide */
+.section-2 .slide {
+    flex-grow: 1;
+    background: blue;
+}
+
+.sidebar-block{
+    background: rgb(159, 217, 251);
+    border-radius: var(--radius);
+    width: 280px;
+    height: 300px;
+    box-shadow: 1px 1px 0 rgb(154, 255, 255),
+                -1px -1px 0 rgb(140, 245, 255),
+                0 2px 10px 0 rgb(125, 184, 215);
+}
+
+.sidebar-judul {
+    border-bottom: 1px solid var(--line);
+    background-image: var(--background-header);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 2px 100px 0 rgb(166, 222, 255);
+    padding: 12px 32px;
+    font-size: 0.85rem;
+}
+
+.sidebar-judul h3{
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 700;
+    text-shadow:rgb(2, 102, 163);
+}
+
+/* container button */
+.sidebar-isi{
+    display: flex;
+    flex-direction: column;
+    margin: 10px 10px;
+    gap: 5px;
+}
+
+/* text button */
+.btn {
+    background: rgb(182, 226, 251);
+    border: none;
+    padding: 16px 30px;
+    border-radius: var(--radius);
+    font-family: "JetBrains Mono" ,-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: rgb(0, 84, 129);
+    box-shadow: 1px 1px 50px 0 rgb(112, 185, 228);
+    transition: background-color 0.2s ease;
+}
+
+/* text button hover */
+.btn:hover {
+    background: rgb(165, 222, 255);
+}
+
+/* text footer di bawah */
+.sidebar-footer p{
+    color: var(--accent-dark);
+    font-size: 12px;
+    text-align: center;
+    padding: 5px 30px;
 }
 
 @media (max-width: 600px) {

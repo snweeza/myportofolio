@@ -7,28 +7,33 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/static/css/style.css">
     </head>
     <body>
         <header class="site-header">
             <div class="container">
                 <a href="#profile" class="brand">Nafeeza Arwatabina</a>
-                <nav>
-                    <a href="#profile">Profile</a>
-                </nav>
+                    <nav>
+                    <a href="#profile" class="folder-nav">Profile</a>
+                    </nav>
+                    <nav>
+                        <a href="#experience" class="folder-nav">Experience</a>
+                    </nav>
             </div>
         </header>
 
         <main>
             <section class="hero" id="profile">
                 <div class="container hero-grid">
+                    <header class="hero-header">
+                        <p class ="hero-kicker">Computer Science &middot; Universitas Indonesia</p>
+                    </header>
                     <div class="hero-identity">
-                    <p class ="hero-kicker">Computer Science &middot; Universitas Indonesia</p>
-                    <h1>Nafeeza Arwatabina</h1>
+                        <h1>Nafeeza Arwatabina</h1>
                     </div>
                     <div class="hero-photo">
-                        <div class="photo-block"></div>
-                        <img class="avatar" src="/static/img/Nafeeza Arwatabina_photojpeg.jpeg" alt ="Photo of Nafeeza">
+                        <img class="avatar" src="/static/img/Selca_Nafeeza.jpeg" alt ="Photo of Nafeeza">
                     </div>
                     <div class ="hero-details">
                         <p class="bio"> Second year Undergraduate CS Student at Universitas Indonesia, who eager to learn and find a sliver of hope amidst the hardship.</p>
@@ -39,7 +44,7 @@
                             </div>
                             <div class="meta-row">
                                 <dt> Program</dt>
-                                <dd>S1 Ilmu Komputer</dd>
+                                <dd>S1 Sistem Informasi</dd>
                 
                             </div>
                         </dl>
@@ -50,6 +55,38 @@
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <section class= "section-2 container" id ="experience">
+                <aside class="section-2 sidebar">
+                    <div class="sidebar-block bg">
+                        <div class="sidebar-judul">
+                            <h3> My Past Experiences</h3>
+                        </div>
+                        <div class="sidebar-isi">
+                            <button class="btn">&gt; Ambass Staff OH 25</button>
+                            <button class="btn">&gt; Bisdev COMPFEST 26</button>
+                            <button class="btn">&gt; AIESEC Summer LV 26</button>
+                        </div>
+                        <div class="sidebar-footer">
+                            <p> Looking for another opportunities..</p>
+                        </div>
+                    </div>
+                </aside>
+                <div class = "section-2 slide">
+                    <div id="slide1">
+                        <h2> Ambassador Staff of Open House Fasilkom 2025</h2>
+                        <p>deskripsi</p>
+                    </div>
+                    <div id="slide2">
+                        <h2> Business Development of COMPFEST 2026</h2>
+                        <p>deskripsi</p>
+                    </div>
+                    <div id="slide3">
+                        <h2>AIESEC Local Volunteer 2026</h2>
+                        <p>deskripsi</p>
+                    </div>
+                </div> 
             </section>
         </main>
 

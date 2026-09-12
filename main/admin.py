@@ -1,3 +1,8 @@
 from django.contrib import admin
+from main.models import Experience
 
 # Register your models here.
+@admin.register(Experience)
+class ExperienceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'thumbnail')
+    search_fields = ('title',)

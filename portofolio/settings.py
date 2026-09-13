@@ -108,6 +108,11 @@ else:
         }
     }
 
+# trusted origin form
+CSRF_TRUSTED_ORIGINS = [
+    "https://user-name-myportofolio.pws.cs.ui.ac.id",
+]
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators

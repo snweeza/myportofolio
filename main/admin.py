@@ -4,5 +4,5 @@ from main.models import Experience
 # Register your models here.
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
-    list_display = ('title', 'thumbnail')
+    list_display = ('title', 'photo')
     search_fields = ('title',)

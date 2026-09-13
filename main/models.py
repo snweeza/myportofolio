@@ -28,3 +28,17 @@ class Experience(models.Model):
     @property
     def is_ongoing(self):
         return self.ended_at is None
+
+class TechStack(models.Model):
+    LEVEL_CHOICES = [
+        ('Learning', 'learning'),
+        ('Competent', 'competent'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=50)
+    level = models.CharField(max_length=25, choices=LEVEL_CHOICES, default='Learning')
+    icon_url = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+            return self.title

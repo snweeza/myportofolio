@@ -14,13 +14,17 @@
         <header class="site-header">
             <div class="container">
                 <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
-                    <nav class="folder-nav">
-                        <a href="{% url 'main:show_main' %}">Profile</a>
-                    </nav>
-                    <nav class="folder-nav">
-                        <a href="{% url 'main:show_experience' %}">Experience</a>
-                    </nav>
-                        
+                    <div class="container-nav">
+                        <nav class="folder-nav">
+                            <a href="{% url 'main:show_main' %}">Profile</a>
+                        </nav>
+                        <nav class="folder-nav">
+                            <a href="{% url 'main:show_experience' %}">Experience</a>
+                        </nav>
+                        <nav class="folder-nav">
+                            <a href="{% url 'main:show_techstack' %}">Skills</a>
+                        </nav>
+                </div>
             </div>
         </header>
 

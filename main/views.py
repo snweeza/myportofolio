@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 
 from main.models import Experience
+from main.models import TechStack
 
 
 def show_main(request):
@@ -24,3 +25,12 @@ def show_experience(request):
         "experience_list": Experience.objects.all(),
     }
     return render(request, "experience.html", context)
+
+def show_techstack(request):
+    context = {
+        "name": "Nafeeza Arwatabina",
+        "skill_competent" : "Competent",
+        "skill_learning" : "Learning",
+        "stack_list": TechStack.objects.all(),
+    }
+    return render(request, "techstack.html", context)

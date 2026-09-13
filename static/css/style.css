@@ -28,12 +28,19 @@ body {
 .brand {
     font-family: "Space Grotesk", -apple-system, sans-serif;
     padding-bottom: 20px;
-    margin-right: 610px;
+    margin-right: 520px;
 }
 
 .container {
     max-width: 1080px;
     margin: 0 auto;
+}
+
+.container-nav {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        align-items: flex-end;
 }
 
 .site-header {
@@ -45,7 +52,6 @@ body {
 .site-header .container {
     display: flex;
     justify-content: space-between; 
-    align-items: center;
     padding: 1.5rem 1.25rem 0 1.5rem;
 }
 
@@ -54,10 +60,6 @@ body {
     font-weight: 700;
     color: var(--ink);
     text-decoration: none;
-}
-
-.site-header nav {
-    display: flex;
 }
 
 /* textnya */
@@ -72,7 +74,7 @@ body {
 .folder-nav {
     background: linear-gradient(to bottom, rgb(119, 177, 218) 3%, rgb(37, 148, 228));
     border-radius: 10px 10px 0 0;
-    padding: 14px 17px 15px 15px;
+    padding: 13px 17px 15px 15px;
     box-shadow: 1px -1px 2px rgb(160, 195, 219);
     transition: background-color 2s ease;
 }
@@ -219,6 +221,8 @@ body {
     border-top: 1px solid var(--line);
 }
 
+/* experience */
+
 .section-2 .block {
     background: rgb(159, 217, 251);
     border-radius: var(--radius);
@@ -255,6 +259,9 @@ body {
     max-width: 200px;
     border: 4px solid rgb(149, 138, 145);
     box-shadow: 0 2px 100px 0 rgb(166, 222, 255);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .experience-section {
@@ -280,7 +287,7 @@ body {
     font-size: 0.80rem;
     font-weight: 700;
     text-transform: uppercase;
-    padding: 10px 40px;
+    padding: 10px 50px;
 }
 
 .experience-details {
@@ -311,6 +318,61 @@ body {
     background: var(--background-btn-green);
 }
 
+/* techstack/skills */
+.skills-section {
+    padding: 4rem 0;
+    border-top: 1px solid var(--line);
+}
+
+.skill-level {
+    display: block;
+    color: var(--accent-dark);
+    font-size: 1.75rem;
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.stack-icon {
+    background: white;
+    border-radius: var(--radius);
+    max-width: 80px;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.stack-icon:hover {
+    transform: scale(1.1);
+}
+
+.skills-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.skill-details {
+    /* background: linear-gradient(to right, #d0e1ea43, #93fffa44); */
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    color: var(--text-muted);
+    padding: 10px;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.skill-title {
+    padding: 5px 18px;
+}
+
+.empty-state {
+    color: rgb(33, 52, 98);
+}
+
+
+
 @media (max-width: 600px) {
     .hero-grid {
         grid-template-columns: 1fr;
@@ -326,20 +388,27 @@ body {
     }
 
     .brand {
-        margin-right: 50px;
+        font-size: 1rem;
+        margin-right: 15px;
     }
 
     .social-links {
         justify-content: flex-start;
     }
 
+    .container-nav {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+    }
+
     .folder-nav {
-        padding: 1px 10px 1px 10px;
+        padding: 1px 8px;
         border-radius: 10px;
     }
 
     .container {
-        padding: 0 30px;
+        padding: 10px 30px;
     }
 
     .hero-kicker {

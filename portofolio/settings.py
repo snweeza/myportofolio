@@ -22,6 +22,10 @@ PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# via admin
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -103,6 +107,11 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+# trusted origin form
+CSRF_TRUSTED_ORIGINS = [
+    "https://user-name-myportofolio.pws.cs.ui.ac.id",
+]
 
 
 # Password validation

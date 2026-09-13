@@ -9,6 +9,8 @@
     --paper: linear-gradient(to bottom right, #7fc5ec 30%, #7ddad5 70%);
     --background-header: linear-gradient(to bottom, rgb(119, 177, 218), rgb(37, 148, 228), rgb(1, 121, 195));
     --background-container: linear-gradient(to bottom right, #afd8ed, rgb(169, 231, 239));
+    --background-btn-green: linear-gradient(to bottom, rgb(134, 227, 209), rgb(58, 173, 135), rgb(23, 137, 126));
+    --background-btn-pink: linear-gradient(to bottom,rgb(250, 180, 220),rgb(230, 110, 180),rgb(180, 50, 130));
     --accent: #069181;
     --accent-dark: #274b69;
     --line: #a0d4dd;
@@ -26,12 +28,18 @@ body {
 .brand {
     font-family: "Space Grotesk", -apple-system, sans-serif;
     padding-bottom: 20px;
-    margin-right: 610px;
 }
 
 .container {
     max-width: 1080px;
     margin: 0 auto;
+}
+
+.container-nav {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        align-items: flex-end;
 }
 
 .site-header {
@@ -43,7 +51,6 @@ body {
 .site-header .container {
     display: flex;
     justify-content: space-between; 
-    align-items: center;
     padding: 1.5rem 1.25rem 0 1.5rem;
 }
 
@@ -52,10 +59,6 @@ body {
     font-weight: 700;
     color: var(--ink);
     text-decoration: none;
-}
-
-.site-header nav {
-    display: flex;
 }
 
 /* textnya */
@@ -70,7 +73,7 @@ body {
 .folder-nav {
     background: linear-gradient(to bottom, rgb(119, 177, 218) 3%, rgb(37, 148, 228));
     border-radius: 10px 10px 0 0;
-    padding: 14px 17px 15px 15px;
+    padding: 13px 17px 15px 15px;
     box-shadow: 1px -1px 2px rgb(160, 195, 219);
     transition: background-color 2s ease;
 }
@@ -217,12 +220,15 @@ body {
     border-top: 1px solid var(--line);
 }
 
+/* experience */
+
 .section-2 .block {
     background: rgb(159, 217, 251);
     border-radius: var(--radius);
     box-shadow: 1px 1px 0 rgb(154, 255, 255),
                 -1px -1px 0 rgb(140, 245, 255),
                 0 2px 10px 0 rgb(125, 184, 215);
+    margin-bottom: 20px;
 }
 
 .section-2 .header {
@@ -230,49 +236,15 @@ body {
     background-image: var(--background-header);
     border-radius: 16px 16px 0 0;
     box-shadow: 0 2px 100px 0 rgb(166, 222, 255);
-    padding: 12px 32px;
-    font-size: 0.85rem;
+    padding: 10px 32px;
+    font-size: 0.67rem;
+    text-shadow: 1px 1px 0 rgb(59, 121, 146);
 }
 
 .section-2 .header h3{
     text-transform: uppercase;
     font-weight: 700;
     text-shadow:rgb(2, 102, 163);
-}
-
-/* container summary*/
-.section-2-experience {
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
-    gap: 5px;
-}
-
-/* text summary */
-.btn {
-    background: rgb(182, 226, 251);
-    border: none;
-    padding: 16px 30px;
-    border-radius: var(--radius);
-    font-family: "JetBrains Mono" ,-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    text-align: left;
-    font-weight: 600;
-    color: rgb(0, 84, 129);
-    box-shadow: 1px 1px 50px 0 rgb(112, 185, 228);
-    transition: background-color 0.2s ease;
-}
-
-/* text summary hover */
-.btn:hover {
-    background: rgb(165, 222, 255);
-}
-
-/* text footer di bawah */
-.section-2 .footer p {
-    color: var(--accent-dark);
-    font-size: 12px;
-    padding: 5px 30px 15px;
 }
 
 /* details */
@@ -283,16 +255,12 @@ body {
 }
 
 .activity-photo {
-    width: 200px;
-    border: 3px solid rgb(64, 123, 132);
+    max-width: 200px;
+    border: 4px solid rgb(149, 138, 145);
     box-shadow: 0 2px 100px 0 rgb(166, 222, 255);
-}
-
-.experience-desc {
-    flex-grow: 1;
-    padding: 10px 30px;
-    color: var(--accent-dark);
-    text-align: justify;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .experience-section {
@@ -313,41 +281,96 @@ body {
     font-size: 2rem;
 }
 
-.experience-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1rem;
-}
-
-.experience-card {
-    padding: 1.25rem;
-    background: linear-gradient(to bottom, rgb(91, 198, 212), #77a8ed);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-}
-
 .experience-category {
-    color: var(--accent-dark);
-    font-size: 0.75rem;
+    color: var(--accent);
+    font-size: 0.80rem;
     font-weight: 700;
     text-transform: uppercase;
+    padding: 10px 50px;
 }
 
-.experience-card h2 {
-    margin: 0.5rem 0;
-    font-size: 1.25rem;
+.experience-details {
+    padding: 5px 15px;
 }
 
-.experience-description,
-.empty-state {
-    color: rgb(175, 218, 114);
+.experience-desc {
+    padding: 0 5px;
+    color: var(--accent-dark);
+    text-align: justify;
 }
 
 .experience-status {
+    display: inline-block;
     margin-top: 1rem;
     font-size: 0.85rem;
     font-weight: 600;
+    border-radius: 50px;
+    box-shadow: 0 2px 100px 0 rgb(166, 255, 255);
+    padding: 7px 17px;
 }
+
+.status-ongoing {
+    background: var(--background-btn-pink);
+}
+
+.status-done {
+    background: var(--background-btn-green);
+}
+
+/* techstack/skills */
+.skills-section {
+    padding: 4rem 0;
+    border-top: 1px solid var(--line);
+}
+
+.skill-level {
+    display: block;
+    color: var(--accent-dark);
+    font-size: 1.75rem;
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.stack-icon {
+    background: white;
+    border-radius: var(--radius);
+    max-width: 80px;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.stack-icon:hover {
+    transform: scale(1.1);
+}
+
+.skills-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.skill-details {
+    /* background: linear-gradient(to right, #d0e1ea43, #93fffa44); */
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    color: var(--text-muted);
+    padding: 10px;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.skill-title {
+    padding: 5px 18px;
+}
+
+.empty-state {
+    color: rgb(33, 52, 98);
+}
+
+
 
 @media (max-width: 600px) {
     .hero-grid {
@@ -357,7 +380,6 @@ body {
             "identity"
             "photo"
             "details";
-        
     }
 
     .hero-photo {
@@ -365,20 +387,27 @@ body {
     }
 
     .brand {
-        margin-right: 50px;
+        font-size: 1rem;
+        margin-right: 15px;
     }
 
     .social-links {
         justify-content: flex-start;
     }
 
+    .container-nav {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+    }
+
     .folder-nav {
-        padding: 1px 10px 1px 10px;
+        padding: 1px 8px;
         border-radius: 10px;
     }
 
     .container {
-        padding: 0 30px;
+        padding: 10px 30px;
     }
 
     .hero-kicker {
@@ -410,6 +439,4 @@ body {
     .experience-desc {
         font-size: 12px;
     }
-
-
 }

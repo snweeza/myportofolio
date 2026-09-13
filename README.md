@@ -17,16 +17,17 @@ Saya mengerjakan tugas hampir sepenuhnya secara mandiri dengan belajar banyak da
 
 Saya pun tetap memanfaatkan AI Search di google untuk contoh potongan kode, penjelasan rinci mengenai perbedaan beberapa elemen html & css, dan saya menggunakan chatGPT untuk permasalahan commit di branch yang salah.
 
-Note:
-Saya ada salah commit ke branch master instead of main,
-96fd16e (HEAD -> master) Tugas 1: Responsive Screen
-fc3d74c CSS Section-2
-922f4e2 Add Skeleton HTML Section 2 + CSS Sidebar
-af37619 Desain Ulang CSS - Hero
+### Tugas 2
+1. Jelaskan alur yang terjadi ketika pengguna membuka halaman portofolio baru, mulai dari permintaan yang diterima proyek hingga data ditampilkan pada browser. Dalam jawabanmu, jelaskan peran urls.py proyek, urls.py aplikasi, view, model, dan template.
+= Saat pengguna membuka halaman portofolio baru, browser akan mengirimkan request HTTP ke server. Request tersebut diterima oleh urls.py proyek lalu dicocokkan dengan path aplikasi yang sesuai kemudian diteruskan ke urls.py aplikasi. Selanjutnya, urls.py aplikasi akan routing path ke page melalui view. View akan menerima request lalu mengambil data yang dibutuhkan dari model. Setelah itu, view akan memanggil template dan mengirimkan context berisi data tadi.
 
-Jadi saya merge dan commit yang di main hanya 2:
-09e7ead (HEAD -> main, pws/master, origin/main) Tugas 1: Restore Responsive Screen
-6fe312d Merge Branch Master ke Main
+Model sendiri merupakan representasi tabel di database yang menyimpan data aplikasi sehingga view bisa mengambil seluruh data dan dikirimkan ke template. Template bertugas merender tampilan HTML menggunakan data dari context. Di dalam-nya, Django Template Language (DTL) dipakai untuk menampilkan data yang kemudian dikirim balik ke browser sebagai HTTP response dan ditampilkan ke pengguna.
 
-Maaf buat ini saya masih bingung huhu apakah penyelesaiannya sudah benar atau ada hal yang
-sebaiknya saya lakukan? Mohon bantuannya Bu/Kak Asdos.
+2. Mengapa data untuk bagian portofolio baru sebaiknya disimpan pada model dan tidak ditulis langsung di dalam template? Jelaskan dampaknya terhadap kemudahan pemeliharaan dan pengembangan aplikasi.
+= Agar adanya pemisahan logika antara kode pemrograman dan tampilan visual. Dengan model, data bisa ditambah, diubah, atau dihapus tanpa menyentuh kode template sama sekali. Hal ini membuat update data menjadi lebih cepat karena struktur HTML tidak ada yang perlu di edit dan data dapat divalidasi sehingga mengurangi risiko error dibandingkan dengan hardcode. Selain itu, penggunaan model juga memungkinkan data digunakan ulang di berbagai page dan aplikasi lebih mudah diskalakan karena data disimpan secara terstruktur di database.
+
+3. Apa perbedaan fungsi makemigrations dan migrate pada Django? Berikan contoh perubahan model yang mengharuskanmu menjalankan kedua perintah tersebut.
+= makemigrations menciptakan berkas migrasi yang berisi perubahan model yang belum diaplikasikan ke dalam basis data. Lalu migrate mengaplikasikan perubahan model yang tercantum dalam berkas migrasi ke basis data dengan menjalankan perintah sebelumnya. Pada kasus saya, penambahan field photo di experience dan pembuatan model baru yaitu tech stack membutuhkan kedua perintah tersebut.
+
+Deklarasi AI:
+Saya menggunakan DeepSeek untuk membantu saya menambahkan field photo di model experience. Awalnya saya berpikir bahwa dengan menggunakan urlfield sudah cukup tetapi photo untuk page experience merupakan photo yang berasal dari file pribadi. Oleh karena itu, saya meminta bantuan Gen AI untuk dapat menambahkan field photo. DeepSeek kemudian memberikan saya dua respon yaitu menggunakan form dan via admin. Saya pun melakukan pengecekan cakupan tugas tiga tahun lalu untuk menjadikan acuan mana yang masih cakupan tugas dua. Setelah saya telusuri, saya akhirnya memutuskan untuk meminta langkah2 yang menggunakan django admin. Deepseek merespon secara detail, mulai dari penggunaan imagefield, install pillow, hingga pembuatan superuser.

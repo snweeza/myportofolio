@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from main.models import Experience
+from main.models import TechStack
 
 
 class MainTest(TestCase):
@@ -14,6 +15,11 @@ class MainTest(TestCase):
             title="VPIC Bisdev SIWAK-NG",
             description="Bertanggung jawab dalam pengembangan bisnis SIWAK-NG.",
             category="volunteer",
+        )
+        self.techstack = TechStack.objects.create(
+            title="HTML",
+            level="Learning",
+            icon_url="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png", 
         )
 
     def test_main_url_is_accessible(self):
@@ -59,3 +65,23 @@ class MainTest(TestCase):
         self.assertFalse(self.experience.is_ongoing)
         self.assertContains(response, "Selesai")
         self.assertNotContains(response, "Sedang berlangsung")
+
+    def test_techstack_model(self):
+            self.assertEqual(str(self.techstack), "HTML")
+            self.assertEqual(self.techstack.level, "Learning")
+            self.assertEqual(self.techstack.icon_url, "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png")
+
+    def test_techstack_page(self):
+            response = self.client.get(reverse("main:show_techstack"))
+    
+            self.assertEqual(response.status_code, 200)
+            self.assertTemplateUsed(response, "techstack.html")
+            self.assertContains(response, self.techstack.title)
+            self.assertContains(response, "Learning")
+            self.assertContains(response, "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png")
+
+    def test_empty_ts_page(self):
+            TechStack.objects.all().delete()
+            response = self.client.get(reverse("main:show_techstack"))
+    
+            self.assertContains(response, "Belum ada skill yang ditambahkan.")

@@ -7,33 +7,61 @@
     <main>
         <section class="skills-section container" id="skills">
             {%if stack_list%}
-                <h1 class="skill-level"> {{ skill_competent }} </h1>
-                <div class="skills-wrapper">
-                    {% for skill in stack_list %}
-                        {%if skill.level == 'Competent' %}
-                            <div class="skill-details">
-                                {% if skill.icon_url %}
-                                    <img src="{{ skill.icon_url }}" alt="{{ skill.title }}" class="stack-icon">
-                                {% endif %}
-                                <span class= skill-title> {{ skill.title }} </span>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+            <div class="skills-layout">
+                <div class="skill-column">
+                    <h1 class="skill-category">{{ skill_technical }} </h1>
+                    <div class="skills-wrapper">
+                        {% for skill in stack_list %}
+                            {%if skill.category == 'Technical' %}
+                                <details class="skill-icon">
+                                    <summary>
+                                        <img src="{{ skill.icon_url }}" alt="{{ skill.title }}" class="stack-icon">
+                                        <span class="skill-title">{{ skill.title }}</span>
+                                    </summary>
+
+                                    <div class="skill-info">
+                                        <p>{{ skill.description }}</p>
+                                    </div>
+                                </details>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
 
-                <h1 class="skill-level"> {{ skill_learning }} </h1>
-                <div class="skills-wrapper">
-                    {% for skill in stack_list %}
-                        {%if skill.level == 'Learning' %}
-                            <div class="skill-details">
-                                {% if skill.icon_url %}
-                                    <img src="{{ skill.icon_url }}" alt="{{ skill.title }}" class="stack-icon">
-                                {% endif %}
-                                <span class= skill-title> {{ skill.title }} </span>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+                <div class="skill-column">
+                    <h1 class="skill-category">{{ skill_tool }} </h1>
+                    <div class="skills-wrapper">
+                        {% for skill in stack_list %}
+                            {%if skill.category == 'Tool' %}
+                                <details class="skill-icon">
+                                    <summary>
+                                        <img src="{{ skill.icon_url }}" alt="{{ skill.title }}" class="stack-icon">
+                                        <span class="skill-title">{{ skill.title }}</span>
+                                    </summary>
+
+                                    <div class="skill-info">
+                                        <p>{{ skill.description }}</p>
+                                    </div>
+                                </details>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
+
+                <div class="skill-column">
+                    <h1 class="skill-category"> {{ skill_soft }} </h1>
+                    <div class="skills-wrapper soft-grid">
+                        {% for skill in stack_list %}
+                            {%if skill.category == 'Soft Skill' %}
+                                <div class="skill-card">
+                                    <h3>{{ skill.title }}</h3>
+                                    <p> > {{ skill.description }}</p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
             {% else %}
                 <p class="empty-state">Belum ada skill yang ditambahkan.</p>
             {% endif %}

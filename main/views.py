@@ -42,8 +42,9 @@ def show_experience(request):
 def show_techstack(request):
     context = {
         "name": "Nafeeza Arwatabina",
-        "skill_competent" : "Competent",
-        "skill_learning" : "Learning",
+        "skill_technical" : "Technical",
+        "skill_soft" : "Soft Skills",
+        "skill_tool" : "Tools",
         "stack_list": TechStack.objects.all(),
     }
     return render(request, "techstack.html", context)

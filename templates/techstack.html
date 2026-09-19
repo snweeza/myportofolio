@@ -6,6 +6,26 @@
 {% block content %}
     <main>
         <section class="skills-section container" id="skills">
+            <div class="skill-header">
+                <h1>Skill</h1>
+                    <a href="{% url 'main:create_skill' %}"
+                        class="button experience-add-button">
+                        <span aria-hidden="true">+</span>
+                        Tambah Skill
+                    </a>
+            </div>
+            <form method="get"
+                    action="{% url 'main:show_techstack' %}"
+                    class="experience-search">
+                <input type="search"
+                        name="title"
+                        value="{{ title_query }}"
+                        placeholder="Cari berdasarkan nama skill"
+                        class="experience-search__input"
+                        aria-label="Cari berdasarkan nama skill">
+                <button type="submit" class="button">Cari</button>
+            </form>
+
             {%if stack_list%}
             <div class="skills-layout">
                 <div class="skill-column">
@@ -21,6 +41,7 @@
 
                                     <div class="skill-info">
                                         <p>{{ skill.description }}</p>
+                                        {% include "components/skill_delete_modal.html" with skill=skill %}
                                     </div>
                                 </details>
                             {% endif %}
@@ -41,6 +62,7 @@
 
                                     <div class="skill-info">
                                         <p>{{ skill.description }}</p>
+                                        {% include "components/skill_delete_modal.html" with skill=skill %}
                                     </div>
                                 </details>
                             {% endif %}
@@ -53,15 +75,21 @@
                     <div class="skills-wrapper soft-grid">
                         {% for skill in stack_list %}
                             {%if skill.category == 'Soft Skill' %}
-                                <div class="skill-card">
-                                    <h3>{{ skill.title }}</h3>
+                                <details class="skill-card">
+                                    <summary>
+                                        <h3>{{ skill.title }}</h3>
+                                    </summary>
+
                                     <p> > {{ skill.description }}</p>
-                                </div>
+                                    {% include "components/skill_delete_modal.html" with skill=skill %}
+                                </details>
                             {% endif %}
                         {% endfor %}
                     </div>
                 </div>
             </div>
+            {% elif title_query %}
+                <p class="empty-state">Tidak ada skill dengan nama tersebut.</p>
             {% else %}
                 <p class="empty-state">Belum ada skill yang ditambahkan.</p>
             {% endif %}

@@ -321,6 +321,15 @@ body {
     border-top: 1px solid var(--line);
 }
 
+.skill-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
 .skills-layout {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -437,7 +446,7 @@ body {
     color: #315466;
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 20px;
-    padding: 2rem;
+    padding: 1rem;
     transition: transform 0.3s ease;
 }
 
@@ -446,9 +455,11 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-.skill-card h3 {
-    text-shadow: 2px 1px 20px white;
-    margin-bottom: 0.5rem;
+.skill-card summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #315466;
 }
 
 .skill-card p {
@@ -512,16 +523,16 @@ body {
     border: 0;
     border-radius: var(--radius);
     padding: 0.65rem 1rem;
-    background: var(--accent);
+    background: var(--accent-dark);
     color: white;
     cursor: pointer;
-    font: inherit;
+    font: "Space Grotesk" ,-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-weight: 700;
     text-decoration: none;
 }
 
 .button-secondary {
-    background: var(--ink);
+    background: rgb(11, 11, 11);
 }
 
 /* update tutorial 3 */
@@ -567,8 +578,8 @@ body {
 }
 
 .experience-search__input:focus {
-    outline: 2px solid var(--accent);
-    border-color: var(--accent);
+    outline: 2px solid var(--accent-dark);
+    border-color: var(--accent-dark);
 }
 
 .experience-actions {
@@ -593,7 +604,7 @@ body {
     margin-top: 0;
 }
 
-.experience-delete-modal {
+.object-delete-modal {
     display: none;
     position: fixed;
     inset: 0;
@@ -610,11 +621,11 @@ body {
     justify-content: center;
 }
 
-.experience-delete-modal:popover-open {
+.object-delete-modal:popover-open {
     display: flex;
 }
 
-.experience-delete-modal__backdrop {
+.object-delete-modal__backdrop {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -625,7 +636,7 @@ body {
     cursor: default;
 }
 
-.experience-delete-modal__content {
+.object-delete-modal__content {
     position: relative;
     z-index: 1;
     width: min(100%, 480px);
@@ -636,7 +647,7 @@ body {
     box-shadow: 0 1rem 3rem rgba(28, 25, 23, 0.22);
 }
 
-.experience-delete-modal__content h2 {
+.object-delete-modal__content h2 {
     margin: 0 0 0.75rem;
     font-family:
         "Space Grotesk",
@@ -645,7 +656,7 @@ body {
     font-size: 1.5rem;
 }
 
-.experience-delete-modal__close {
+.object-delete-modal__close {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -658,7 +669,7 @@ body {
     cursor: pointer;
 }
 
-.experience-delete-modal__actions {
+.object-delete-modal__actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
@@ -706,7 +717,7 @@ body {
     }
 
     .site-header nav a {
-        font-size: 0.90rem;
+        font-size: clamp(0.85rem, 1.5vw, 0.9rem);
     }
 
     .container {
@@ -762,24 +773,39 @@ body {
         width: 100%;
     }
 
-    .experience-delete-modal {
+    .object-delete-modal {
         align-items: flex-end;
         padding: 0;
     }
 
-    .experience-delete-modal__content {
+    .object-delete-modal__content {
         width: 100%;
         padding: 1.25rem;
         border-radius: var(--radius) var(--radius) 0 0;
     }
 
-    .experience-delete-modal__actions {
+    .object-delete-modal__actions {
         flex-direction: column-reverse;
     }
 
-    .experience-delete-modal__actions .button {
+    .object-delete-modal__actions .button {
         width: 100%;
         text-align: center;
+    }
+
+    .experience-status {
+        width: 100%;
+        text-align: center;
+    }
+
+    .skill-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .skill-header h1{
+        padding: 10px;
     }
 
     .skills-layout {
@@ -793,7 +819,7 @@ body {
     
     .skill-category {
         font-size: 1rem;
-        padding: 8px 20px;
+        padding: 10px 20px;
     }
     
     .skill-icon {

@@ -128,3 +128,27 @@ def delete_skill(request, skill_id):
         return redirect("main:show_techstack")
 
     return redirect("main:show_techstack")
+
+def update_skill(request, skill_id):
+    skill = get_object_or_404(TechStack, pk=skill_id)
+
+    if request.method == "POST":
+        form = TechStackForm(request.POST, instance=skill)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Skill berhasil di update!")
+            return redirect("main:show_techstack")
+        
+    else:
+        form = TechStackForm(instance=skill)
+    
+        context = {
+            "name": "Nafeeza Arwatabina",
+            "skill_technical" : "Technical",
+            "skill_soft" : "Soft Skills",
+            "skill_tool" : "Tools",
+            "form": form,
+            "skill": skill,
+        }
+        return render(request, "update_skill.html", context)

@@ -41,6 +41,11 @@
 
                                     <div class="skill-info">
                                         <p>{{ skill.description }}</p>
+                                        <p class="experience-status">
+                                            <a href="{% url 'main:update_skill' skill.id %}" class="button button-update">
+                                                Edit Skill
+                                            </a>
+                                        </p>
                                         {% include "components/skill_delete_modal.html" with skill=skill %}
                                     </div>
                                 </details>
@@ -62,6 +67,11 @@
 
                                     <div class="skill-info">
                                         <p>{{ skill.description }}</p>
+                                        <p class="experience-status">
+                                            <a href="{% url 'main:update_skill' skill.id %}" class="button button-update">
+                                                Edit Skill
+                                            </a>
+                                        </p>
                                         {% include "components/skill_delete_modal.html" with skill=skill %}
                                     </div>
                                 </details>
@@ -81,6 +91,11 @@
                                     </summary>
 
                                     <p> > {{ skill.description }}</p>
+                                    <p class="experience-status">
+                                        <a href="{% url 'main:update_skill' skill.id %}" class="button button-update">
+                                            Edit Skill
+                                        </a>
+                                    </p>
                                     {% include "components/skill_delete_modal.html" with skill=skill %}
                                 </details>
                             {% endif %}

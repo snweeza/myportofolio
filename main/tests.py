@@ -18,7 +18,7 @@ class MainTest(TestCase):
         )
         self.techstack = TechStack.objects.create(
             title="HTML",
-            level="Learning",
+            category="Technical",
             icon_url="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png", 
         )
 
@@ -68,7 +68,7 @@ class MainTest(TestCase):
 
     def test_techstack_model(self):
             self.assertEqual(str(self.techstack), "HTML")
-            self.assertEqual(self.techstack.level, "Learning")
+            self.assertEqual(self.techstack.category, "Technical")
             self.assertEqual(self.techstack.icon_url, "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png")
 
     def test_techstack_page(self):
@@ -77,7 +77,7 @@ class MainTest(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertTemplateUsed(response, "techstack.html")
             self.assertContains(response, self.techstack.title)
-            self.assertContains(response, "Learning")
+            self.assertContains(response, "Technical")
             self.assertContains(response, "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png")
 
     def test_empty_ts_page(self):

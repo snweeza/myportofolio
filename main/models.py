@@ -18,8 +18,7 @@ class Experience(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     category = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES, default='full-time')
-    photo = models.ImageField(upload_to='portofolio/photo/', blank=True, null=True)
-    thumbnail = models.URLField(blank=True, null=True)
+    photo = models.URLField(blank=True, null=True)
     started_at = models.DateTimeField(auto_now_add=True)
     ended_at = models.DateTimeField(blank=True, null=True)
     def __str__(self):
@@ -30,14 +29,16 @@ class Experience(models.Model):
         return self.ended_at is None
 
 class TechStack(models.Model):
-    LEVEL_CHOICES = [
-        ('Learning', 'learning'),
-        ('Competent', 'competent'),
+    CATEGORY_CHOICES = [
+        ('Technical', 'technical'),
+        ('Soft Skill', 'soft'),
+        ('Tool', 'tool'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=50)
-    level = models.CharField(max_length=25, choices=LEVEL_CHOICES, default='Learning')
+    category = models.CharField(max_length=25, choices=CATEGORY_CHOICES, default='Technical')
+    description = models.TextField(blank=True)
     icon_url = models.URLField(blank=True, null=True)
 
     def __str__(self):

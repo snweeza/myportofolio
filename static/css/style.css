@@ -433,12 +433,7 @@ body {
 }
 
 .skill-card {
-    background: linear-gradient(
-        to bottom,
-        #ffffff 0%,
-        #eef3f6 45%,
-        #d5e0e7 100%
-    );
+    background: linear-gradient( to bottom, #ffffff 0%, #eef3f6 45%, #d5e0e7 100%);
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.95),
         0 1px 3px rgba(60, 100, 120, 0.25);
@@ -526,7 +521,7 @@ body {
     background: var(--accent-dark);
     color: white;
     cursor: pointer;
-    font: "Space Grotesk" ,-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font: inherit;
     font-weight: 700;
     text-decoration: none;
 }
@@ -680,6 +675,9 @@ body {
     background: #b42318;
 }
 
+.button-update {
+    background: var(--background-header);
+}
 
 @media (max-width: 600px) {
     .hero-grid {
@@ -717,7 +715,7 @@ body {
     }
 
     .site-header nav a {
-        font-size: clamp(0.85rem, 1.5vw, 0.9rem);
+        font-size: clamp(0.78rem, 1.5vw, 0.9rem);
     }
 
     .container {
@@ -760,6 +758,10 @@ body {
         gap: 0.75rem;
     }
 
+    .experience-status {
+    text-align: center;
+    }
+
     .experience-add-button {
         width: 100%;
         justify-content: center;
@@ -789,11 +791,6 @@ body {
     }
 
     .object-delete-modal__actions .button {
-        width: 100%;
-        text-align: center;
-    }
-
-    .experience-status {
         width: 100%;
         text-align: center;
     }

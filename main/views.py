@@ -1,15 +1,27 @@
 from django.contrib import messages
 from django.core import serializers
 from django.http import HttpResponse
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import get_object_or_404, redirect, render
+import datetime
+from django.contrib.auth.decorators import login_required  # Tambahkan baris ini
+from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
 
 # Create your views here.
 
 from main.models import Experience, TechStack
 from main.forms import ExperienceForm, TechStackForm
 
+# kalo show tuh perlu context sama render (request, html, context)
+# ada perlu bikin fungsi yang didefinisikan di model, request, if method==post, manggil fungsi di model, return redirect sm satunya lg return render
+# kalo create, bikin object form = ProjectForm(request.POST or None), abis itu if method==post & form.is_valid(), save, redirect
+# kalo delete, perlu primary key, trs bikin object get object brdsrkan primary key, if method==post, delete, buuth konteks, redirect
+# kalo update, perlu get object primary key, if method==post && valid , bikin object ngambil form dgn instance objectnya, butuh context, sama redirect
 
 def show_main(request):
+    last_login = request.COOKIES.get('last_login', 'Belum ada sesi login / Cookie tidak ditemukan')
+
     context = {
         "name": "Nafeeza Arwatabina",
         "npm": "2506604573",
@@ -18,9 +30,9 @@ def show_main(request):
             "Second year Undergraduate CS Student at Universitas Indonesia, " 
             "who eager to learn and find a sliver of hope amidst the hardship."
         ),
+        "last_login": last_login,
     }
     return render(request, "index.html", context)
-
 
 def show_experience(request):
     json_response = get_experiences_json(request)
@@ -39,7 +51,11 @@ def show_experience(request):
     }
     return render(request, "experience.html", context)
 
+@login_required(login_url="/login/") 
 def create_experience(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -63,13 +79,16 @@ def get_experiences_json(request):
     experiences_json = serializers.serialize("json", experiences)
     return HttpResponse(experiences_json, content_type="application/json")
 
+@login_required(login_url="/login/") 
 def delete_experience(request, experience_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
     experience = get_object_or_404(Experience, pk=experience_id)
 
     if request.method == "POST":
         experience.delete()
         messages.success(request, "Experience berhasil dihapus!")
-        return redirect("main:show_experience")
 
     return redirect("main:show_experience")
 
@@ -89,10 +108,16 @@ def show_techstack(request):
         "skill_soft" : "Soft Skills",
         "skill_tool" : "Tools",
         "stack_list": skills,
+        "title_query": title_query,
     }
+
     return render(request, "techstack.html", context)
 
+@login_required(login_url="/login/") 
 def create_skill(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
     form = TechStackForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -119,13 +144,16 @@ def get_skills_json(request):
     skills_json = serializers.serialize("json", skills)
     return HttpResponse(skills_json, content_type="application/json")
 
+@login_required(login_url="/login/") 
 def delete_skill(request, skill_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
     skill = get_object_or_404(TechStack, pk=skill_id)
 
     if request.method == "POST":
         skill.delete()
         messages.success(request, "Skill berhasil dihapus!")
-        return redirect("main:show_techstack")
 
     return redirect("main:show_techstack")
 
@@ -152,3 +180,39 @@ def update_skill(request, skill_id):
             "skill": skill,
         }
         return render(request, "update_skill.html", context)
+
+def register(request):
+    form = UserCreationForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Akun berhasil dibuat. Silakan login.")
+        return redirect("main:login")
+
+    context = {
+        "name": "Nafeeza",
+        "form": form,
+    }
+    return render(request, "register.html", context)
+
+def login_user(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        login(request, form.get_user())
+        response = redirect("main:show_main")
+        current_time =  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        response.set_cookie('last_login', current_time)
+        return response
+
+    context = {
+        "name": "Nafeeza",
+        "form": form,
+    }
+    return render(request, "login.html", context)
+
+def logout_user(request):
+    logout(request)
+    response = redirect("main:show_main")
+    response.delete_cookie('last_login')
+    return response

@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import datetime
 from django.contrib.auth.decorators import login_required  # Tambahkan baris ini
 from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
+from django.contrib.auth.models import Group
 
 # Create your views here.
 
@@ -228,3 +229,6 @@ def toggle_star(request, skill_id):
             skill.starred_by.add(request.user)
 
     return redirect("main:show_skills")
+
+def is_editor(request):
+    return request.user.groups.filter(name='Editor').exists()

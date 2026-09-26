@@ -6,11 +6,11 @@
     <main>
         <section class="experience-section">
             <div class="container">
-                <h1>Login</h1>
+                <h1 class="judul-container">Login</h1>
                 {% for message in messages %}
                     <p class="form-message">{{ message }}</p>
                 {% endfor %}
-                <form method="post" action="{% url 'main:login' %}" class="project-form">
+                <form method="post" action="{% url 'main:login' %}" class="experience-form">
                     {% csrf_token %}
                     {% for field in form %}
                         <div class="form-group">
@@ -26,7 +26,7 @@
                     {% endfor %}
                     <button type="submit" class="button">Login</button>
                 </form>
-                <p>Belum punya akun? <a href="{% url 'main:register' %}">Daftar di sini</a>.</p>
+                <p class="register-link">Belum punya akun? <a href="{% url 'main:register' %}">Daftar di sini</a>.</p>
             </div>
         </section>
     </main>

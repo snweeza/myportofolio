@@ -6,8 +6,8 @@
     <main>
         <section class="experience-section">
             <div class="container">
-                <h1>Buat Akun</h1>
-                <form method="post" action="{% url 'main:register' %}" class="project-form">
+                <h1 class="judul-container">Buat Akun</h1>
+                <form method="post" action="{% url 'main:register' %}" class="experience-form">
                     {% csrf_token %}
                     {% for error in form.non_field_errors %}
                         <p class="form-error">{{ error }}</p>
@@ -26,7 +26,7 @@
                     {% endfor %}
                     <button type="submit" class="button">Daftar</button>
                 </form>
-                <p>Sudah punya akun? <a href="{% url 'main:login' %}">Login di sini</a>.</p>
+                <p class="login-link">Sudah punya akun? <a href="{% url 'main:login' %}">Login di sini</a>.</p>
             </div>
         </section>
     </main>

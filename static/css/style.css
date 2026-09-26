@@ -485,6 +485,7 @@ body {
     display: block;
     margin-bottom: 0.4rem;
     font-weight: 700;
+    color: var(--accent-dark);
 }
 
 .form-group input,
@@ -492,7 +493,7 @@ body {
     width: 100%;
     box-sizing: border-box;
     padding: 0.7rem;
-    border: 1px solid var(--accent);
+    border: 1px solid var(--accent-dark);
     border-radius: var(--radius);
     font: inherit;
     transition:
@@ -502,8 +503,8 @@ body {
 
 .form-group input:focus,
 .form-group textarea:focus {
-    outline: 2px solid var(--accent);
-    border-color: var(--accent);
+    outline: 2px solid var(--accent-dark);
+    border-color: var(--accent-dark);
 }
 
 .form-error {
@@ -677,6 +678,38 @@ body {
 
 .button-update {
     background: var(--background-header);
+}
+
+.register-link, .login-link, .form-help {
+    color:#044b69;
+}
+
+.judul-container {
+    color:#347299;
+}
+
+
+/* tutorial 4 */
+.star-form {
+    display: inline;
+}
+
+.button-star {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--accent-dark);
+}
+
+.button-star.is-starred {
+    background: var(--accent);
+}
+
+.star-count {
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.25);
+    font-size: 0.8rem;
 }
 
 @media (max-width: 600px) {

@@ -43,6 +43,7 @@ def show_experience(request):
         "name": "Nafeeza Arwatabina",
         "experience_list": experiences,
         "title_query": title_query,
+        "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
     return render(request, "experience.html", context)
 
@@ -106,6 +107,7 @@ def show_skills(request):
         "skill_tool" : "Tools",
         "stack_list": skills,
         "title_query": title_query,
+        "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
 
     return render(request, "skills.html", context)
@@ -230,5 +232,24 @@ def toggle_star(request, skill_id):
 
     return redirect("main:show_skills")
 
-def is_editor(request):
-    return request.user.groups.filter(name='Editor').exists()
+def update_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.method == "POST":
+        form = ExperienceForm(request.POST, instance=experience)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Experience berhasil di update!")
+            return redirect("main:show_experience")
+        
+    else:
+        form = ExperienceForm(instance=experience)
+    
+    context = {
+        "name": "Nafeeza Arwatabina",
+        "form": form,
+        "experience": experience,
+    }
+    
+    return render(request, "experiences_form.html", context)

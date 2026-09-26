@@ -38,28 +38,31 @@
                                     <h2>> {{ experience.title }}</h2>
                                 </div>
                                 <div class="isi-summary">
-                                    {% if experience.photo %}
-                                        <span class="experience-photo">
-                                            <img class ="activity-photo" src="{{ experience.photo }}" alt="{{ experience.title }}"></img>
-                                        </span>
-                                    {%endif%}
+                                    <span class="experience-photo">
+                                        <img src="{{ experience.photo }}" alt="{{ experience.title }}" class ="activity-photo" ></img>
+                                    </span>
                                     <span class="experience-category">
                                         {{ experience.get_category_display }}
                                     </span>
                                     <div class="experience-details">
-                                        <p class="experience-desc">
-                                            {{ experience.description }}
-                                        </p>
-                                        <div class="experience-card-actions">
-                                            {% if experience.is_ongoing %}
+                                        {% if experience.is_ongoing %}
                                                 <p class="experience-status status-ongoing">Sedang berlangsung</p>
                                             {% else %}
                                                 <p class="experience-status status-done">Selesai</p>
                                             {% endif %}
+                                        <p class="experience-desc">
+                                            {{ experience.description }}
+                                        </p>
+                                        <div class="experience-card-actions">
+                                            {% if user.is_superuser or is_editor %}
+                                            <p class="experience-status">
+                                                <a href="{% url 'main:update_experience' experience.id %}" class="button button-update">
+                                                    Edit Experience
+                                                </a>
+                                            </p>
+                                            {% endif %}
                                             {% if user.is_superuser %}
-                                            <div class="experience-actions">
                                                 {% include "components/experience_delete_modal.html" with experience=experience %}
-                                            </div>
                                             {% endif %}
                                         </div>
                                     </div>

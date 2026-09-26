@@ -13,12 +13,6 @@ from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
 from main.models import Experience, TechStack
 from main.forms import ExperienceForm, TechStackForm
 
-# kalo show tuh perlu context sama render (request, html, context)
-# ada perlu bikin fungsi yang didefinisikan di model, request, if method==post, manggil fungsi di model, return redirect sm satunya lg return render
-# kalo create, bikin object form = ProjectForm(request.POST or None), abis itu if method==post & form.is_valid(), save, redirect
-# kalo delete, perlu primary key, trs bikin object get object brdsrkan primary key, if method==post, delete, buuth konteks, redirect
-# kalo update, perlu get object primary key, if method==post && valid , bikin object ngambil form dgn instance objectnya, butuh context, sama redirect
-
 def show_main(request):
     last_login = request.COOKIES.get('last_login', 'Belum ada sesi login / Cookie tidak ditemukan')
 
@@ -92,7 +86,7 @@ def delete_experience(request, experience_id):
 
     return redirect("main:show_experience")
 
-def show_techstack(request):
+def show_skills(request):
     json_response = get_skills_json(request)
 
     skills = serializers.deserialize(
@@ -111,7 +105,7 @@ def show_techstack(request):
         "title_query": title_query,
     }
 
-    return render(request, "techstack.html", context)
+    return render(request, "skills.html", context)
 
 @login_required(login_url="/login/") 
 def create_skill(request):
@@ -123,7 +117,7 @@ def create_skill(request):
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, "Skill baru berhasil ditambahkan!")
-        return redirect("main:show_techstack")
+        return redirect("main:show_skills")
 
     context = {
         "name": "Nafeeza Arwatabina",
@@ -155,7 +149,7 @@ def delete_skill(request, skill_id):
         skill.delete()
         messages.success(request, "Skill berhasil dihapus!")
 
-    return redirect("main:show_techstack")
+    return redirect("main:show_skills")
 
 def update_skill(request, skill_id):
     skill = get_object_or_404(TechStack, pk=skill_id)
@@ -166,7 +160,7 @@ def update_skill(request, skill_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Skill berhasil di update!")
-            return redirect("main:show_techstack")
+            return redirect("main:show_skills")
         
     else:
         form = TechStackForm(instance=skill)
@@ -216,3 +210,17 @@ def logout_user(request):
     response = redirect("main:show_main")
     response.delete_cookie('last_login')
     return response
+
+@login_required(login_url="/login/")
+def toggle_star(request, skill_id):
+    skill = get_object_or_404(TechStack, pk=skill_id)
+
+    if request.method == "POST":
+        # Kalau akun ini sudah pernah memberi star, batalkan star-nya.
+        # Kalau belum, tambahkan star.
+        if request.user in skill.starred_by.all():
+            skill.starred_by.remove(request.user)
+        else:
+            skill.starred_by.add(request.user)
+
+    return redirect("main:show_skills")

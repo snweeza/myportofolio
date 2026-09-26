@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import datetime
 from django.contrib.auth.decorators import login_required  # Tambahkan baris ini
 from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
+from django.contrib.auth.models import Group
 
 # Create your views here.
 
@@ -42,6 +43,7 @@ def show_experience(request):
         "name": "Nafeeza Arwatabina",
         "experience_list": experiences,
         "title_query": title_query,
+        "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
     return render(request, "experience.html", context)
 
@@ -105,6 +107,7 @@ def show_skills(request):
         "skill_tool" : "Tools",
         "stack_list": skills,
         "title_query": title_query,
+        "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
 
     return render(request, "skills.html", context)
@@ -177,7 +180,7 @@ def update_skill(request, skill_id):
             "form": form,
             "skill": skill,
         }
-        return render(request, "update_skill.html", context)
+        return render(request, "skills_form.html", context)
 
 def register(request):
     form = UserCreationForm(request.POST or None)
@@ -228,3 +231,25 @@ def toggle_star(request, skill_id):
             skill.starred_by.add(request.user)
 
     return redirect("main:show_skills")
+
+def update_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.method == "POST":
+        form = ExperienceForm(request.POST, instance=experience)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Experience berhasil di update!")
+            return redirect("main:show_experience")
+        
+    else:
+        form = ExperienceForm(instance=experience)
+    
+    context = {
+        "name": "Nafeeza Arwatabina",
+        "form": form,
+        "experience": experience,
+    }
+    
+    return render(request, "experiences_form.html", context)

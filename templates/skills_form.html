@@ -6,7 +6,7 @@
     <main>
         <section class="experience-section">
             <div class="container">
-                <h1>Add Skill</h1>
+                <h1 class="judul-container">Add Skill</h1>
                 <form method="post"
                     action="{% url 'main:create_skill' %}"
                     class="experience-form">
@@ -21,7 +21,7 @@
                         </div>
                     {% endfor %}
                     <button type="submit" class="button">Tambah Skill</button>
-                    <a href="{% url 'main:show_techstack' %}" class="button button-secondary">Batal</a>
+                    <a href="{% url 'main:show_skills' %}" class="button button-secondary">Batal</a>
                 </form>
             </div>
         </section>

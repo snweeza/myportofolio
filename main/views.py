@@ -178,7 +178,7 @@ def update_skill(request, skill_id):
             "form": form,
             "skill": skill,
         }
-        return render(request, "update_skill.html", context)
+        return render(request, "skills_form.html", context)
 
 def register(request):
     form = UserCreationForm(request.POST or None)

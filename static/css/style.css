@@ -105,11 +105,11 @@ body {
 
 .hero-block {
     background: var(--background-container);
-    width: 100%;
     border-radius: var(--radius);
     box-shadow: 1px 1px 0 white,
                 -1px -1px 0 white,
                 0 2px 10px 0 rgb(83, 122, 143);
+    overflow: hidden;
 }
 
 .hero-header {
@@ -118,11 +118,11 @@ body {
     background-image: var(--background-header);
     border-radius: 16px 16px 0 0;
     padding: 10px 30px;
-    box-shadow: 0 2px 100px 0 rgb(166, 222, 255); 
+    box-shadow: 0 2px 100px 0 rgb(166, 222, 255);
 }
 
 .hero-kicker {
-    font-size: 0.85rem;
+    font-size: clamp(0.65rem, 1.5vw, 0.85rem);;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink);
@@ -680,6 +680,10 @@ body {
 }
 
 @media (max-width: 600px) {
+    .container {
+        margin: 0 20px;
+    }
+
     .hero-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
@@ -687,10 +691,6 @@ body {
             "identity"
             "photo"
             "details";
-    }
-
-    .hero-photo {
-        max-width: 350px;
     }
 
     .brand {
@@ -705,8 +705,10 @@ body {
     .container-nav {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-end;
         gap: 6px;
-        margin: 20px 5px;
+        margin: 8px 5px;
     }
 
     .folder-nav {
@@ -716,26 +718,11 @@ body {
 
     .site-header nav a {
         font-size: clamp(0.78rem, 1.5vw, 0.9rem);
+        white-space: nowrap;
     }
 
-    .container {
-        padding: 10px 30px;
-    }
-
-    .hero-kicker {
-        font-size: 0.65rem;
-    }
-
-    .hero .container {
-        padding: 0 0;
-    }
-
-    .hero-kicker {
-        font-size: 0.65rem;
-    }
-
-    .hero-block {
-        max-width: 350px;
+    .meta-list {
+        gap: 1rem;
     }
 
     .isi-summary {

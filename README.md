@@ -24,6 +24,25 @@ command: python manage.py migrate
 command: python manage.py runserver
 9. Development server akan dijalankan di http://127.0.0.1:8000/
 
+## Permission Access
+Untuk membuat akun admin
+    1. command: python manage.py createsuperuser
+    2. Masukkan username dan password
+
+Untuk membuat editor group
+    1. http://127.0.0.1:8000/admin/, lalu login sebagai admin
+    2. Buka Groups, add group, group name: Editor, save
+    3. Bikin akun
+
+Untuk memasukkan akun ke dalam group
+    1. Buka terminal, command: python manage.py shell
+    2. Masukkan akun di python shell dengan menjalankan,
+    >>> from django.contrib.auth.models import User, Group
+    >>> editor = User.objects.get(username="<selected-username>")
+    >>> editor_group = Group.objects.get(name="Editor")
+    >>> editor.groups.add(editor_group)
+
+
 ### Tugas 1
 1. Pada Tutorial dan Tugas 1, Anda diberi kebebasan untuk menentukan tampilan dari website portofolio Anda. Saat Anda merancang struktur HTML yang digunakan, apakah Anda menggunakan elemen semantik HTML5 seperti <section>, <article>, atau <aside>? Jika iya, bagaimana elemen tersebut membantu Anda dalam membuat static web? Jika tidak, mengapa tanpa elemen tersebut sudah memenuhi kebutuhan desain Anda?
 = Saya hanya menggunakan section dan aside, dimana section saya gunakan untuk membuat section-2 yang berisi tampilan seluruh experience dan aside saya gunakan untuk tampilan photo menjadi di samping deskripsi pada isi summary karena saya hanya menggunakan flexbox. Untuk article saat ini saya belum benar-benar memahami sebaiknya digunakan dimana, karena untuk membungkus elemen kebanyakan saya masih menggunakan div.

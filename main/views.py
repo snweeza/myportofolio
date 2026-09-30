@@ -8,6 +8,7 @@ import datetime
 from django.contrib.auth.decorators import login_required  # Tambahkan baris ini
 from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
 from django.contrib.auth.models import Group
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -105,7 +106,6 @@ def show_skills(request):
         "skill_technical" : "Technical",
         "skill_soft" : "Soft Skills",
         "skill_tool" : "Tools",
-        "stack_list": skills,
         "title_query": title_query,
         "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
@@ -140,10 +140,26 @@ def get_skills_json(request):
     if title_query:
         skills = skills.filter(title__icontains=title_query)
 
-    skills_json = serializers.serialize(
-    "json", skills, use_natural_foreign_keys=True)
+    data = []
+    for skill in skills:
+        starred_users = skill.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ", ".join([u.username for u in starred_users])
+
+        data.append({
+            "pk": str(skill.id),
+            "fields": {
+                "title": skill.title,
+                "category": skill.category,
+                "description": skill.description,
+                "icon_url": skill.icon_url,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+                }
+            })
     
-    return HttpResponse(skills_json, content_type="application/json")
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url="/login/") 
 def delete_skill(request, skill_id):

@@ -7,6 +7,9 @@
     <main>
         <section class="skills-section container" id="skills">
             <div class="skill-header">
+                <button class="button button-secondary" onclick="showToast('Notifikasi Sistem', 'Skill berhasil dimuat dengan baik!', 'success')">
+                        Test Toast Notifikasi
+                    </button>
                 <h1 class="judul-container">Skill</h1>
                 {% if user.is_superuser %}
                     <a href="{% url 'main:create_skill' %}"
@@ -16,10 +19,10 @@
                     </a>
                 {% endif %}
             </div>
-            <form method="get"
-                    action="{% url 'main:show_skills' %}"
+            <form id="skill-search-form"
                     class="experience-search">
                 <input type="search"
+                        id="search-input"
                         name="title"
                         value="{{ title_query }}"
                         placeholder="Cari berdasarkan nama skill"
@@ -28,104 +31,242 @@
                 <button type="submit" class="button">Cari</button>
             </form>
 
-            {%if stack_list%}
-            <div class="skills-layout">
-                <div class="skill-column">
-                    <h1 class="skill-category">{{ skill_technical }} </h1>
-                    <div class="skills-wrapper">
-                        {% for skill in stack_list %}
-                            {%if skill.category == 'Technical' %}
-                                <details class="skill-icon">
-                                    <summary>
-                                        <img src="{{ skill.icon_url }}" alt="{{ skill.title }}" class="stack-icon">
-                                        <span class="skill-title">{{ skill.title }}</span>
-                                    </summary>
-
-                                    <div class="skill-info">
-                                        <p>{{ skill.description }}</p>
-                                        {% include "components/skill_star.html" with skill=skill %}
-                                        {% if user.is_superuser or is_editor %}
-                                        <p class="experience-status">
-                                            <a href="{% url 'main:update_skill' skill.id %}" class="button button-update">
-                                                Edit Skill
-                                            </a>
-                                        </p>
-                                        {% endif %}
-                                        {% if user.is_superuser %}
-                                        {% include "components/skill_delete_modal.html" with skill=skill %}
-                                        {% endif %}
-                                    </div>
-                                </details>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+            <!-- Loading State -->
+                <div id="loading" class="empty-state hide">
+                    <p>Memuat skills...</p>
                 </div>
 
-                <div class="skill-column">
-                    <h1 class="skill-category">{{ skill_tool }} </h1>
-                    <div class="skills-wrapper">
-                        {% for skill in stack_list %}
-                            {%if skill.category == 'Tool' %}
-                                <details class="skill-icon">
-                                    <summary>
-                                        <img src="{{ skill.icon_url }}" alt="{{ skill.title }}" class="stack-icon">
-                                        <span class="skill-title">{{ skill.title }}</span>
-                                    </summary>
-
-                                    <div class="skill-info">
-                                        <p>{{ skill.description }}</p>
-                                        {% include "components/skill_star.html" with skill=skill %}
-                                        {% if user.is_superuser or is_editor %}
-                                        <p class="experience-status">
-                                            <a href="{% url 'main:update_skill' skill.id %}" class="button button-update">
-                                                Edit Skill
-                                            </a>
-                                        </p>
-                                        {% endif %}
-                                        {% if user.is_superuser %}
-                                        {% include "components/skill_delete_modal.html" with skill=skill %}
-                                        {% endif %}
-                                    </div>
-                                </details>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                <!-- Error State -->
+                <div id="error" class="empty-state hide">
+                    <p>Gagal memuat data skills. Silakan coba lagi.</p>
                 </div>
 
-                <div class="skill-column">
-                    <h1 class="skill-category"> {{ skill_soft }} </h1>
-                    <div class="skills-wrapper soft-grid">
-                        {% for skill in stack_list %}
-                            {%if skill.category == 'Soft Skill' %}
-                                <details class="skill-card">
-                                    <summary>
-                                        <h3>{{ skill.title }}</h3>
-                                    </summary>
-
-                                    <p> > {{ skill.description }}</p>
-                                    {% include "components/skill_star.html" with skill=skill %}
-                                    {% if user.is_superuser or is_editor %}
-                                        <p class="experience-status">
-                                            <a href="{% url 'main:update_skill' skill.id %}" class="button button-update">
-                                                Edit Skill
-                                            </a>
-                                        </p>
-                                    {% endif %}
-                                    {% if user.is_superuser %}
-                                        {% include "components/skill_delete_modal.html" with skill=skill %}
-                                    {% endif %}
-                                </details>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                <!-- Empty State -->
+                <div id="empty" class="empty-state hide">
+                    <p>Belum ada skill yang ditambahkan atau ditemukan.</p>
                 </div>
+
+                <!--Grid -->
+                <div id="grid" class="skills-layout hide">
+                    <!-- Technical -->
+            <div class="skill-column">
+
+                <h1 class="skill-category">
+                    {{ skill_technical }}
+                </h1>
+
+                <div
+                    id="technical-skills"
+                    class="skills-wrapper"
+                ></div>
+
             </div>
-            {% elif title_query %}
-                <p class="empty-state">Tidak ada skill dengan nama tersebut.</p>
-            {% else %}
-                <p class="empty-state">Belum ada skill yang ditambahkan.</p>
-            {% endif %}
 
-        </section>
+            <!-- Tool -->
+            <div class="skill-column">
+
+                <h1 class="skill-category">
+                    {{ skill_tool }}
+                </h1>
+
+                <div
+                    id="tool-skills"
+                    class="skills-wrapper"
+                ></div>
+
+            </div>
+
+            <div class="skill-column">
+
+                <h1 class="skill-category">
+                    {{ skill_soft }}
+                </h1>
+
+                <div
+                    id="soft-skills"
+                    class="skills-wrapper soft-grid"
+                ></div>
+
+            </div>
+
+            </div>
+    </section>
     </main>
+
+
+    
+    <script>
+    // Konfigurasi
+    const BASE_SKILLS_ENDPOINT = "{% url 'main:get_skills_json' %}";
+    const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
+    let skillsAbortController;
+
+    // Elemen DOM
+    const loadingState = document.getElementById('loading');
+    const errorState = document.getElementById('error');
+    const emptyState = document.getElementById('empty');
+    const gridContainer = document.getElementById('grid');
+    const technicalContainer = document.getElementById('technical-skills');
+    const toolContainer = document.getElementById('tool-skills');
+    const softContainer = document.getElementById('soft-skills');
+    const searchForm = document.getElementById('skill-search-form');
+    const searchInput = document.getElementById('search-input');
+
+    // Menyembunyikan/Menampilkan section halaman
+    function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
+        loadingState.classList.toggle('hide', !showLoading);
+        errorState.classList.toggle('hide', !showError);
+        emptyState.classList.toggle('hide', !showEmpty);
+        gridContainer.classList.toggle('hide', !showGrid);
+    }
+
+    // Membuat elemen card skill
+    function buildSkillCardElement(item) {
+        const skill = item.fields;
+        const skillId = item.pk;
+
+        // const articleElement = document.createElement('article');
+        // articleElement.className = 'experience-card';
+
+        // const imageHtml = skill.icon_url 
+        //     ? `<img src="${skill.icon_url}" alt="Gambar ${skill.title}" class="skill-image">`
+        //     : '';
+
+        const detailsElement =
+            document.createElement('details');
+
+        // Dummy UUID digunakan untuk digantikan oleh ID asli dari data JSON
+        const deleteUrl = "{% url 'main:delete_skill' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', skillId);
+        const starUrl = "{% url 'main:toggle_star' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', skillId);
+
+        const deleteHtml = IS_SUPERUSER
+            ? `<form method="post" action="${deleteUrl}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="button button-danger" onclick="return confirm('Yakin ingin menghapus skill ini?');">Hapus</button>
+            </form>`
+            : '';
+
+        const isStarredClass = skill.is_starred ? " is-starred" : "";
+        const starText = skill.is_starred ? "Unstar" : "Star";
+        const starTitle = skill.star_count > 0 
+            ? `Dibintangi oleh ${skill.starred_by_names}` 
+            : "Jadilah yang pertama memberi star";
+
+        // Komponen card
+        if ( skill.category === "Technical" || skill.category === "Tool" ) {
+            detailsElement.className = "skill-icon";
+            const imageHtml = skill.icon_url
+                ? `
+                    <img
+                        src="${skill.icon_url}"
+                        alt="Gambar ${skill.title}"
+                        class="skill-image"
+                    >
+                `
+                : "";
+            detailsElement.innerHTML = `
+                                            <summary> 
+                                            ${imageHtml} <span class="skill-title"> ${skill.title} </span> 
+                                            </summary> 
+                                            <div class="skill-info"> 
+                                                <p> ${skill.description || ""} </p>
+                                            <form method="post" action="${starUrl}" class="star-form"> 
+                                                {% csrf_token %} 
+                                                <button type="submit" class="button button-star${isStarredClass}" title="${starTitle}"> <span aria-hidden="true">★</span> 
+                                                    ${starText} 
+                                                <span class="star-count"> ${skill.star_count || 0} </span>
+                                                </button> </form>
+                                                ${deleteHtml} </div> `; 
+        }
+
+        else if (skill.category === "Soft Skill") { 
+            detailsElement.className = "skill-card";
+            articleElement.innerHTML = ` 
+                                            <summary> <h3> ${skill.title} </h3> </summary> 
+                                            <p> &gt; ${skill.description || ""} </p> 
+                                            <form method="post" action="${starUrl}"class="star-form"> 
+                                                {% csrf_token %} 
+                                                <button type="submit" class="button button-star${isStarredClass}" title="${starTitle}"> <span aria-hidden="true">★</span> 
+                                                    ${starText} 
+                                                    <span class="star-count"> ${skill.star_count || 0} </span> 
+                                                    </button> </form>
+                                                    ${deleteHtml} `; 
+        }
+        return detailsElement;
+    }
+
+    // Fetch data skill
+    async function fetchSkills(searchQuery = "") {
+        if (skillsAbortController) skillsAbortController.abort();
+        skillsAbortController = new AbortController();
+
+        try {
+            displayPageSection({ showLoading: true });
+            
+            const url = searchQuery ? `${BASE_SKILLS_ENDPOINT}?title=${encodeURIComponent(searchQuery)}` : BASE_SKILLS_ENDPOINT;
+            
+            const response = await fetch(url, {
+                headers: { 'Accept': 'application/json' },
+                signal: skillsAbortController.signal,
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch data');
+
+            const skillData = await response.json();
+
+            if (skillData.length === 0) {
+                displayPageSection({ showEmpty: true });
+            } else {
+                gridContainer.innerHTML = '';
+                skillData.forEach(item => {
+                    const skill = item.fields;
+
+                    const skillCard =
+                        buildSkillCardElement(item);
+                    
+                    if (skill.category === "Technical") {
+
+                    technicalContainer.appendChild(
+                        skillCard
+                    );
+
+                }
+
+                else if (skill.category === "Tool") {
+
+                    toolContainer.appendChild(
+                        skillCard
+                    );
+                
+                    }
+
+                else if (skill.category === "Soft Skill") {
+
+                    softContainer.appendChild(
+                        skillCard
+                    );
+
+                }
+
+                });
+                displayPageSection({ showGrid: true });
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+            console.error('Error loading skills:', error);
+            displayPageSection({ showError: true });
+        }
+    }
+
+    // Event Handlers untuk Form Search
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Mencegah reload halaman
+        fetchSkills(searchInput.value.trim()); // Jalankan pencarian via AJAX
+    });
+
+    // Start application
+    fetchSkills(searchInput.value.trim());
+    </script>
 {% endblock content %}

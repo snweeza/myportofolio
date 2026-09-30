@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required  # Tambahkan baris ini
 from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
 from django.contrib.auth.models import Group
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 
@@ -92,13 +93,13 @@ def delete_experience(request, experience_id):
     return redirect("main:show_experience")
 
 def show_skills(request):
-    json_response = get_skills_json(request)
+    # json_response = get_skills_json(request)
 
-    skills = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    skills = [skill.object for skill in skills]
+    # skills = serializers.deserialize(
+    #     "json",
+    #     json_response.content.decode("utf-8"),
+    # )
+    # skills = [skill.object for skill in skills]
 
     title_query = request.GET.get("title", "").strip()
     context = {
@@ -107,6 +108,7 @@ def show_skills(request):
         "skill_soft" : "Soft Skills",
         "skill_tool" : "Tools",
         "title_query": title_query,
+        "form": TechStackForm(),
         "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
 
@@ -269,3 +271,21 @@ def update_experience(request, experience_id):
     }
     
     return render(request, "experiences_form.html", context)
+
+@require_POST
+def create_skill_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan skill."},
+            status=403,
+        )
+
+    form = TechStackForm(request.POST)
+    if form.is_valid():
+        skill = form.save()
+        return JsonResponse(
+            {"message": "Skill berhasil ditambahkan.", "pk": str(skill.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)

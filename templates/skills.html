@@ -12,13 +12,20 @@
                     </button>
                 <h1 class="judul-container">Skill</h1>
                 {% if user.is_superuser %}
-                    <a href="{% url 'main:create_skill' %}"
+                    <!-- <a href="{% url 'main:create_skill' %}"
                         class="button experience-add-button">
                         <span aria-hidden="true">+</span>
                         Tambah Skill
-                    </a>
+                    </a> -->
+                    <button type="button"
+                        class="button skill-add-button"
+                        popovertarget="add-skill-modal">
+                    <span aria-hidden="true">+</span>
+                    Tambah Skill
+                </button>
                 {% endif %}
             </div>
+
             <form id="skill-search-form"
                     class="experience-search">
                 <input type="search"
@@ -93,8 +100,10 @@
     </section>
     </main>
 
+    {% if user.is_superuser %}
+    {% include "components/skill_form_modal.html" %}
+    {% endif %}
 
-    
     <script>
     // Konfigurasi
     const BASE_SKILLS_ENDPOINT = "{% url 'main:get_skills_json' %}";
@@ -111,6 +120,8 @@
     const softContainer = document.getElementById('soft-skills');
     const searchForm = document.getElementById('skill-search-form');
     const searchInput = document.getElementById('search-input');
+    const SEARCH_DEBOUNCE_DELAY = 300;
+    let searchDebounceTimer;
 
     // Menyembunyikan/Menampilkan section halaman
     function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
@@ -118,6 +129,15 @@
         errorState.classList.toggle('hide', !showError);
         emptyState.classList.toggle('hide', !showEmpty);
         gridContainer.classList.toggle('hide', !showGrid);
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
     }
 
     // Membuat elemen card skill
@@ -151,7 +171,7 @@
         const isStarredClass = skill.is_starred ? " is-starred" : "";
         const starText = skill.is_starred ? "Unstar" : "Star";
         const starTitle = skill.star_count > 0 
-            ? `Dibintangi oleh ${skill.starred_by_names}` 
+            ? `Dibintangi oleh ${escapeHtml(skill.starred_by_names)}`
             : "Jadilah yang pertama memberi star";
 
         // Komponen card
@@ -160,31 +180,35 @@
             const imageHtml = skill.icon_url
                 ? `
                     <img
-                        src="${skill.icon_url}"
+                        src="${escapeHtml(skill.icon_url)}"
                         alt="Gambar ${skill.title}"
-                        class="skill-image"
+                        class="stack-icon"
                     >
                 `
                 : "";
             detailsElement.innerHTML = `
                                             <summary> 
-                                            ${imageHtml} <span class="skill-title"> ${skill.title} </span> 
+                                            ${imageHtml} <span class="skill-title"> ${escapeHtml(skill.title)} </span> 
                                             </summary> 
                                             <div class="skill-info"> 
                                                 <p> ${skill.description || ""} </p>
-                                            <form method="post" action="${starUrl}" class="star-form"> 
-                                                {% csrf_token %} 
-                                                <button type="submit" class="button button-star${isStarredClass}" title="${starTitle}"> <span aria-hidden="true">★</span> 
-                                                    ${starText} 
-                                                <span class="star-count"> ${skill.star_count || 0} </span>
-                                                </button> </form>
-                                                ${deleteHtml} </div> `; 
+                                                <form method="post" action="${starUrl}" class="star-form"> 
+                                                    {% csrf_token %} 
+                                                    <button type="submit" class="button button-star${isStarredClass}" title="${starTitle}"> <span aria-hidden="true">★</span> 
+                                                        ${starText} 
+                                                    <span class="star-count"> ${skill.star_count || 0} </span>
+                                                    </button> 
+                                                </form>
+                                                ${deleteHtml} 
+                                            </div> `;
+
+                                        return detailsElement;
         }
 
         else if (skill.category === "Soft Skill") { 
             detailsElement.className = "skill-card";
-            articleElement.innerHTML = ` 
-                                            <summary> <h3> ${skill.title} </h3> </summary> 
+            detailsElement.innerHTML = ` 
+                                            <summary> <h3> ${escapeHtml(skill.title)} </h3> </summary> 
                                             <p> &gt; ${skill.description || ""} </p> 
                                             <form method="post" action="${starUrl}"class="star-form"> 
                                                 {% csrf_token %} 
@@ -219,7 +243,10 @@
             if (skillData.length === 0) {
                 displayPageSection({ showEmpty: true });
             } else {
-                gridContainer.innerHTML = '';
+                technicalContainer.innerHTML = '';
+                toolContainer.innerHTML = '';
+                softContainer.innerHTML = '';
+
                 skillData.forEach(item => {
                     const skill = item.fields;
 
@@ -261,10 +288,83 @@
     }
 
     // Event Handlers untuk Form Search
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Mencegah reload halaman
-        fetchSkills(searchInput.value.trim()); // Jalankan pencarian via AJAX
+        function searchSkills() {
+        fetchSkills(searchInput.value.trim());
+    }
+
+    searchInput.addEventListener("input", function() {
+        clearTimeout(searchDebounceTimer);
+
+        searchDebounceTimer = setTimeout(function() {
+            searchSkills();
+        }, SEARCH_DEBOUNCE_DELAY);
     });
+    searchForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Mencegah reload halaman
+        clearTimeout(searchDebounceTimer);
+        searchSkills();
+    });
+
+    function closeSkillModal() {
+    document.getElementById("add-skill-modal").hidePopover();
+    }
+
+    const CREATE_SKILL_ENDPOINT = "{% url 'main:create_skill_ajax' %}";
+    const skillForm = document.getElementById('skill-form');
+
+    // Membaca nilai cookie, digunakan untuk mengambil token CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Mengirim data form ke server
+    async function addSkill(event) {
+        event.preventDefault();
+
+        const submitButton = skillForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch(CREATE_SKILL_ENDPOINT, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+                body: new FormData(skillForm),
+            });
+            const result = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                skillForm.reset();
+                closeSkillModal();
+                showToast('Berhasil', 'Skill baru berhasil ditambahkan!', 'success');
+                fetchSkills(searchInput.value.trim());
+            } else {
+                const errorMessages = result.errors
+                    ? Object.values(result.errors).flat().map(error => error.message)
+                    : [result.message || `Terjadi kesalahan (status ${response.status}).`];
+                showToast('Gagal menambahkan skill', errorMessages.join(' '), 'error');
+            }
+        } catch (error) {
+            console.error('Error adding skill:', error);
+            showToast('Gagal menambahkan skill', 'Tidak dapat terhubung ke server. Silakan coba lagi.', 'error');
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+
+    if (skillForm) {
+        skillForm.addEventListener('submit', addSkill);
+    }
 
     // Start application
     fetchSkills(searchInput.value.trim());

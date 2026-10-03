@@ -32,14 +32,14 @@ def show_main(request):
     return render(request, "index.html", context)
 
 def show_experience(request):
-    json_response = get_experiences_json(request)
+    # json_response = get_experiences_json(request)
 
-    projects = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
+    # objects = serializers.deserialize(
+    #     "json",
+    #     json_response.content.decode("utf-8"),
+    # )
 
-    experiences = [experience.object for experience in projects]
+    # experiences = [experience.object for experience in objects]
     title_query = request.GET.get("title", "").strip()
 
     context = {
@@ -316,6 +316,24 @@ def create_skill_ajax(request):
         skill = form.save()
         return JsonResponse(
             {"message": "Skill berhasil ditambahkan.", "pk": str(skill.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+@require_POST
+def create_experience_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan pengalaman."},
+            status=403,
+        )
+
+    form = ExperienceForm(request.POST)
+    if form.is_valid():
+        experience = form.save()
+        return JsonResponse(
+            {"message": "Experience berhasil ditambahkan.", "pk": str(experience.id)},
             status=201,
         )
 

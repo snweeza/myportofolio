@@ -12,21 +12,21 @@
                     <h1 class="judul-container">Experiences</h1>
                     {% if user.is_superuser %}
                         <button type="button"
-                                class="button object-add-button"
-                                popovertarget="add-object-modal">
+                                class="button experience-add-button"
+                                popovertarget="add-experience-modal">
                             <span aria-hidden="true">+</span>
                             Tambah Experience
                         </button>
                     {% endif %}
                 </div>
                 
-                <form id="object-search-form" class="object-search">
+                <form id="experience-search-form" class="experience-search">
                     <input type="search"
                         id="search-input"
                         name="title"
                         value="{{ title_query }}"
                         placeholder="Cari berdasarkan nama pengalaman"
-                        class="object-search__input"
+                        class="experience-search__input"
                         aria-label="Cari berdasarkan nama pengalaman">
                     <button type="submit" class="button">Cari</button>
                 </form>
@@ -68,7 +68,7 @@
     const errorState = document.getElementById('error');
     const emptyState = document.getElementById('empty');
     const gridContainer = document.getElementById('grid');
-    const searchForm = document.getElementById('object-search-form');
+    const searchForm = document.getElementById('experience-search-form');
     const searchInput = document.getElementById('search-input');
 
     const SEARCH_DEBOUNCE_DELAY = 300;
@@ -88,7 +88,7 @@
         const experienceId = item.pk;
 
         const divElement = document.createElement('div');
-        articleElement.className = 'section-2 block';
+        divElement.className = 'section-2 block';
 
         const imageHtml = experience.photo_url 
             ? `<span class="experience-photo">
@@ -102,17 +102,17 @@
 
         // Dummy UUID digunakan untuk digantikan oleh ID asli dari data JSON
         const deleteUrl = "{% url 'main:delete_experience' '00000000-0000-0000-0000-000000000000' %}"
-            .replace('00000000-0000-0000-0000-000000000000', projectId);
-        const starUrl = "{% url 'main:toggle_star' '00000000-0000-0000-0000-000000000000' %}"
-            .replace('00000000-0000-0000-0000-000000000000', projectId);
+            .replace('00000000-0000-0000-0000-000000000000', experienceId);
+        const starUrl = "{% url 'main:toggle_star_experience' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', experienceId);
         const editUrl = "{% url 'main:update_experience' '00000000-0000-0000-0000-000000000000' %}"
-            .replace('00000000-0000-0000-0000-000000000000', projectId);
+            .replace('00000000-0000-0000-0000-000000000000', experienceId);
 
 
         const deleteHtml = IS_SUPERUSER 
             ? `<form method="post" action="${deleteUrl}" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit" class="button button-danger" onclick="return confirm('Yakin ingin menghapus project ini?');">Hapus</button>
+                <button type="submit" class="button button-danger" onclick="return confirm('Yakin ingin menghapus experience ini?');">Hapus</button>
             </form>`
             : '';
         
@@ -132,17 +132,17 @@
         // Komponen card
         const completeCardHtml = `
             <div class="section-2 header">
-                <h2> {{ experience.title }}</h2>
+                <h2> &gt; ${experience.title}</h2>
             </div>
             <div class="isi-summary">
                 ${imageHtml}
                 <span class="experience-category">
-                    {{ experience.get_category_display }}
+                    ${experience.category}
                 </span>
                 <div class="experience-details">
                     ${statusHtml}
                     <p class="experience-desc">
-                        {{ experience.description }}
+                        ${experience.description}
                     </p>
                     <div class="experience-card-actions">
                         ${editHtml}
@@ -154,7 +154,7 @@
                                     title="${starTitle}">
                                 <span aria-hidden="true">★</span>
                                 ${starText}
-                                <span class="star-count">${project.star_count}</span>
+                                <span class="star-count">${experience.star_count}</span>
                             </button>
                         </form>
 
@@ -224,6 +224,63 @@
         function closeExperienceModal() {
             document.getElementById("add-experience-modal").hidePopover();
         }
+
+        const CREATE_EXPERIENCE_ENDPOINT = "{% url 'main:create_experience_ajax' %}";
+        const experienceForm = document.getElementById('experience-form');
+
+    // Membaca nilai cookie, digunakan untuk mengambil token CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Mengirim data form ke server
+    async function addExperience(event) {
+        event.preventDefault();
+
+        const submitButton = experienceForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch(CREATE_EXPERIENCE_ENDPOINT, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+                body: new FormData(experienceForm),
+            });
+            const result = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                experienceForm.reset();
+                closeExperienceModal();
+                showToast('Berhasil', 'Experience baru berhasil ditambahkan!', 'success');
+                fetchExperiences(searchInput.value.trim());
+            } else {
+                const errorMessages = result.errors
+                    ? Object.values(result.errors).flat().map(error => error.message)
+                    : [result.message || `Terjadi kesalahan (status ${response.status}).`];
+                showToast('Gagal menambahkan experience', errorMessages.join(' '), 'error');
+            }
+        } catch (error) {
+            console.error('Error adding experience:', error);
+            showToast('Gagal menambahkan experience', 'Tidak dapat terhubung ke server. Silakan coba lagi.', 'error');
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+
+    if (experienceForm) {
+        experienceForm.addEventListener('submit', addExperience);
+    }
         // Start application
             fetchExperiences(searchInput.value.trim());
     </script>

@@ -18,7 +18,7 @@
                         Tambah Skill
                     </a> -->
                     <button type="button"
-                        class="button skill-add-button"
+                        class="button experience-add-button"
                         popovertarget="add-skill-modal">
                     <span aria-hidden="true">+</span>
                     Tambah Skill
@@ -121,7 +121,6 @@
     const searchForm = document.getElementById('skill-search-form');
     const searchInput = document.getElementById('search-input');
     const SEARCH_DEBOUNCE_DELAY = 300;
-    const CSRF_TOKEN = "{{ csrf_token }}";
     let searchDebounceTimer;
 
     // Menyembunyikan/Menampilkan section halaman
@@ -159,12 +158,12 @@
         // Dummy UUID digunakan untuk digantikan oleh ID asli dari data JSON
         const deleteUrl = "{% url 'main:delete_skill' '00000000-0000-0000-0000-000000000000' %}"
             .replace('00000000-0000-0000-0000-000000000000', skillId);
-        const starUrl = "{% url 'main:toggle_star' '00000000-0000-0000-0000-000000000000' %}"
+        const starUrl = "{% url 'main:toggle_star_skill' '00000000-0000-0000-0000-000000000000' %}"
             .replace('00000000-0000-0000-0000-000000000000', skillId);
 
         const deleteHtml = IS_SUPERUSER
             ? `<form method="post" action="${deleteUrl}" style="display:inline;">
-                <input type="hidden" name="csrfmiddlewaretoken" value="${CSRF_TOKEN}">
+                {% csrf_token %}
                 <button type="submit" class="button button-danger" onclick="return confirm('Yakin ingin menghapus skill ini?');">Hapus</button>
             </form>`
             : '';
@@ -186,40 +185,41 @@
                         class="stack-icon"
                     >
                 `
-                : "";
-            detailsElement.innerHTML = `
-                                            <summary> 
-                                            ${imageHtml} <span class="skill-title"> ${escapeHtml(skill.title)} </span> 
-                                            </summary> 
-                                            <div class="skill-info"> 
-                                                <p> ${skill.description || ""} </p>
-                                                <form method="post" action="${starUrl}" class="star-form"> 
-                                                    {% csrf_token %} 
-                                                    <button type="submit" class="button button-star${isStarredClass}" title="${starTitle}"> <span aria-hidden="true">★</span> 
-                                                        ${starText} 
-                                                    <span class="star-count"> ${skill.star_count || 0} </span>
-                                                    </button> 
-                                                </form>
-                                                ${deleteHtml} 
-                                            </div> `;
+            : "";
+        detailsElement.innerHTML = `
+                        <summary> 
+                        ${imageHtml} <span class="skill-title"> ${escapeHtml(skill.title)} </span> 
+                        </summary> 
+                        <div class="skill-info"> 
+                            <p> ${skill.description || ""} </p>
+                            <form method="post" action="${starUrl}" class="star-form"> 
+                                {% csrf_token %} 
+                                <button type="submit" class="button button-star${isStarredClass}" title="${starTitle}"> <span aria-hidden="true">★</span> 
+                                    ${starText} 
+                                <span class="star-count"> ${skill.star_count || 0} </span>
+                                </button> 
+                            </form>
+                            ${deleteHtml} 
+                        </div> `;
 
-                                        return detailsElement;
+                    return detailsElement;
         }
 
         else if (skill.category === "Soft Skill") { 
             detailsElement.className = "skill-card";
             detailsElement.innerHTML = ` 
-                                            <summary> <h3> ${escapeHtml(skill.title)} </h3> </summary> 
-                                            <p> &gt; ${skill.description || ""} </p> 
-                                            <form method="post" action="${starUrl}"class="star-form"> 
-                                                {% csrf_token %} 
-                                                <button type="submit" class="button button-star${isStarredClass}" title="${starTitle}"> <span aria-hidden="true">★</span> 
-                                                    ${starText} 
-                                                    <span class="star-count"> ${skill.star_count || 0} </span> 
-                                                    </button> </form>
-                                                    ${deleteHtml} `; 
+                    <summary> <h3> ${escapeHtml(skill.title)} </h3> </summary> 
+                    <p> &gt; ${skill.description || ""} </p> 
+                    <form method="post" action="${starUrl}"class="star-form"> 
+                        {% csrf_token %} 
+                        <button type="submit" class="button button-star${isStarredClass}" title="${starTitle}"> <span aria-hidden="true">★</span> 
+                            ${starText} 
+                            <span class="star-count"> ${skill.star_count || 0} </span> 
+                            </button> </form>
+                            ${deleteHtml} `;
+
+                    return detailsElement;
         }
-        return detailsElement;
     }
 
     // Fetch data skill
@@ -367,7 +367,7 @@
         skillForm.addEventListener('submit', addSkill);
     }
 
-    // // Start application
-    // fetchSkills(searchInput.value.trim());
+    // Start application
+    fetchSkills(searchInput.value.trim());
     </script>
 {% endblock content %}

@@ -719,12 +719,12 @@ body {
     margin: 0;
     padding: 1rem 1.5rem;
     border-radius: var(--radius);
-    box-shadow: 0 10px 25px rgba(28, 25, 23, 0.15);
+    box-shadow: 0 10px 25px rgba(28, 25, 23, 0.153);
     display: none;
     align-items: center;
     gap: 1rem;
     transition: all 0.3s ease;
-    background-color: var(--paper);
+    background: whitesmoke;
     border: 1px solid var(--line);
     color: inherit;
 }

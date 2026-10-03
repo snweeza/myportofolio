@@ -4,8 +4,6 @@ from main.models import Experience, TechStack
 from django.core.exceptions import ValidationError
 from django.utils.html import strip_tags
 
-
-
 class ExperienceForm(ModelForm):
     class Meta:
         model = Experience
@@ -54,6 +52,18 @@ class ExperienceForm(ModelForm):
                 }
             ),
         }
+
+    def clean_title(self):
+        title = strip_tags(self.cleaned_data["title"]).strip()
+        if not title:
+            raise ValidationError("Nama experience tidak boleh hanya berisi tag HTML.")
+        return title
+
+    def clean_category(self):
+        return strip_tags(self.cleaned_data["category"]).strip()
+
+    def clean_description(self):
+        return strip_tags(self.cleaned_data["description"]).strip()
 
 class TechStackForm(ModelForm):
     class Meta:

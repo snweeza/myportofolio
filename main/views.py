@@ -91,6 +91,7 @@ def get_experiences_json(request):
                 "star_count": starred_users.count(),
                 "is_starred": is_starred,
                 "starred_by_names": starred_by_names,
+                "is_ongoing": experience.ended_at is None,
             }
         })
 

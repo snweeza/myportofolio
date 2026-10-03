@@ -38,12 +38,12 @@ def show_experience(request):
         "json",
         json_response.content.decode("utf-8"),
     )
+
     experiences = [experience.object for experience in projects]
     title_query = request.GET.get("title", "").strip()
 
     context = {
         "name": "Nafeeza Arwatabina",
-        "experience_list": experiences,
         "title_query": title_query,
         "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
@@ -69,15 +69,31 @@ def create_experience(request):
 
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
-    experiences = Experience.objects.all()
+    experiences = Experience.objects.prefetch_related('starred_by').all()
 
     if title_query:
         experiences = experiences.filter(title__icontains=title_query)
 
-    experiences_json = serializers.serialize(
-    "json", experiences, use_natural_foreign_keys=True)
+    data = []
+    for experience in experiences:
+        starred_users = experience.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ", ".join([u.username for u in starred_users])
 
-    return HttpResponse(experiences_json, content_type="application/json")
+        data.append({
+            "pk": str(experience.id),
+            "fields": {
+                "title": experience.title,
+                "description": experience.description,
+                "category" : experience.category,
+                "photo_url": experience.photo,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url="/login/") 
 def delete_experience(request, experience_id):
@@ -137,7 +153,7 @@ def create_skill(request):
 
 def get_skills_json(request):
     title_query = request.GET.get("title", "").strip()
-    skills = TechStack.objects.all()
+    skills = TechStack.objects.prefetch_related('starred_by').all()
 
     if title_query:
         skills = skills.filter(title__icontains=title_query)
@@ -237,7 +253,7 @@ def logout_user(request):
     return response
 
 @login_required(login_url="/login/")
-def toggle_star(request, skill_id):
+def toggle_star_skill(request, skill_id):
     skill = get_object_or_404(TechStack, pk=skill_id)
 
     if request.method == "POST":
@@ -249,6 +265,20 @@ def toggle_star(request, skill_id):
             skill.starred_by.add(request.user)
 
     return redirect("main:show_skills")
+
+@login_required(login_url="/login/")
+def toggle_star_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.method == "POST":
+        # Kalau akun ini sudah pernah memberi star, batalkan star-nya.
+        # Kalau belum, tambahkan star.
+        if request.user in experience.starred_by.all():
+            experience.starred_by.remove(request.user)
+        else:
+            experience.starred_by.add(request.user)
+
+    return redirect("main:show_experience")
 
 def update_experience(request, experience_id):
     experience = get_object_or_404(Experience, pk=experience_id)

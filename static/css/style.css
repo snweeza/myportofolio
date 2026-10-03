@@ -762,7 +762,7 @@ body {
 .toast-normal { border-left: 4px solid var(--accent); }
 
 /* form modal tutorial 5 */
-.skill-form-modal {
+.object-form-modal {
     display: none;
     position: fixed;
     inset: 0;
@@ -779,11 +779,11 @@ body {
     justify-content: center;
 }
 
-.skill-form-modal:popover-open {
+.object-form-modal:popover-open {
     display: flex;
 }
 
-.skill-form-modal__backdrop {
+.object-form-modal__backdrop {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -794,7 +794,7 @@ body {
     cursor: default;
 }
 
-.skill-form-modal__content {
+.object-form-modal__content {
     position: relative;
     z-index: 1;
     width: min(100%, 640px);
@@ -807,13 +807,13 @@ body {
     box-shadow: 0 1rem 3rem rgba(28, 25, 23, 0.22);
 }
 
-.skill-form-modal__content h2 {
+.object-form-modal__content h2 {
     margin: 0 2.5rem 1.25rem 0;
     font-family: "Space Grotesk", -apple-system, sans-serif;
     font-size: 1.5rem;
 }
 
-.skill-form-modal__close {
+.object-form-modal__close {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -826,7 +826,7 @@ body {
     cursor: pointer;
 }
 
-.skill-form-modal__actions {
+.object-form-modal__actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
@@ -967,23 +967,23 @@ body {
     }
 
     /* tutorial 5 */
-    .skill-form-modal__content {
+    .object-form-modal__content {
         width: 100%;
         max-height: 90vh;
         padding: 1.25rem;
         border-radius: var(--radius) var(--radius) 0 0;
     }
 
-    .skill-form-modal__actions {
+    .object-form-modal__actions {
         flex-direction: column-reverse;
     }
 
-    .skill-form-modal__actions .button {
+    .object-form-modal__actions .button {
         width: 100%;
         text-align: center;
     }
 
-    .skill-form-modal {
+    .object-form-modal {
         align-items: flex-end;
         padding: 0;
     }

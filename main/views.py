@@ -45,6 +45,7 @@ def show_experience(request):
     context = {
         "name": "Nafeeza Arwatabina",
         "title_query": title_query,
+        "form": ExperienceForm(),
         "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
     return render(request, "experience.html", context)

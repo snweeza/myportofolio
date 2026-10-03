@@ -1,27 +1,27 @@
-<div id="add-skill-modal"
+<div id="add-experience-modal"
      class="object-form-modal"
      popover="auto"
      role="dialog"
      aria-modal="true"
-     aria-labelledby="add-skill-modal-title">
+     aria-labelledby="add-experience-modal-title">
     <button type="button"
             class="object-form-modal__backdrop"
-            popovertarget="add-skill-modal"
+            popovertarget="add-experience-modal"
             popovertargetaction="hide"
-            aria-label="Tutup form tambah skill"></button>
+            aria-label="Tutup form tambah pengalaman"></button>
 
     <div class="object-form-modal__content">
         <button type="button"
                 class="object-form-modal__close"
-                popovertarget="add-skill-modal"
+                popovertarget="add-experience-modal"
                 popovertargetaction="hide"
-                aria-label="Tutup form tambah skill">×</button>
+                aria-label="Tutup form tambah pengalaman">×</button>
 
-        <h2 id="add-skill-modal-title">Tambah Skill Baru</h2>
-        <form id="skill-form"
-            method="post"
-            action="{% url 'main:create_skill' %}"
-            class="object-form">
+        <h2 id="add-experience-modal-title">Tambah Pengalaman Baru</h2>
+        <form id="experience-form"
+              method="post"
+              action="{% url 'main:create_experience' %}"
+              class="object-form">
             {% csrf_token %}
             {% for field in form %}
                 <div class="form-group">
@@ -35,9 +35,9 @@
             <div class="object-form-modal__actions">
                 <button type="button"
                         class="button button-secondary"
-                        popovertarget="add-skill-modal"
+                        popovertarget="add-experience-modal"
                         popovertargetaction="hide">Batal</button>
-                <button type="submit" class="button">Tambah Skill</button>
+                <button type="submit" class="button">Tambah Pengalaman</button>
             </div>
         </form>
     </div>

@@ -8,6 +8,8 @@ import datetime
 from django.contrib.auth.decorators import login_required  # Tambahkan baris ini
 from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
 from django.contrib.auth.models import Group
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 
@@ -30,19 +32,20 @@ def show_main(request):
     return render(request, "index.html", context)
 
 def show_experience(request):
-    json_response = get_experiences_json(request)
+    # json_response = get_experiences_json(request)
 
-    projects = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    experiences = [experience.object for experience in projects]
+    # objects = serializers.deserialize(
+    #     "json",
+    #     json_response.content.decode("utf-8"),
+    # )
+
+    # experiences = [experience.object for experience in objects]
     title_query = request.GET.get("title", "").strip()
 
     context = {
         "name": "Nafeeza Arwatabina",
-        "experience_list": experiences,
         "title_query": title_query,
+        "form": ExperienceForm(),
         "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
     return render(request, "experience.html", context)
@@ -67,15 +70,32 @@ def create_experience(request):
 
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
-    experiences = Experience.objects.all()
+    experiences = Experience.objects.prefetch_related('starred_by').all()
 
     if title_query:
         experiences = experiences.filter(title__icontains=title_query)
 
-    experiences_json = serializers.serialize(
-    "json", experiences, use_natural_foreign_keys=True)
+    data = []
+    for experience in experiences:
+        starred_users = experience.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ", ".join([u.username for u in starred_users])
 
-    return HttpResponse(experiences_json, content_type="application/json")
+        data.append({
+            "pk": str(experience.id),
+            "fields": {
+                "title": experience.title,
+                "description": experience.description,
+                "category" : experience.category,
+                "photo_url": experience.photo,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+                "is_ongoing": experience.ended_at is None,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url="/login/") 
 def delete_experience(request, experience_id):
@@ -91,13 +111,13 @@ def delete_experience(request, experience_id):
     return redirect("main:show_experience")
 
 def show_skills(request):
-    json_response = get_skills_json(request)
+    # json_response = get_skills_json(request)
 
-    skills = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    skills = [skill.object for skill in skills]
+    # skills = serializers.deserialize(
+    #     "json",
+    #     json_response.content.decode("utf-8"),
+    # )
+    # skills = [skill.object for skill in skills]
 
     title_query = request.GET.get("title", "").strip()
     context = {
@@ -105,8 +125,8 @@ def show_skills(request):
         "skill_technical" : "Technical",
         "skill_soft" : "Soft Skills",
         "skill_tool" : "Tools",
-        "stack_list": skills,
         "title_query": title_query,
+        "form": TechStackForm(),
         "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
 
@@ -135,15 +155,31 @@ def create_skill(request):
 
 def get_skills_json(request):
     title_query = request.GET.get("title", "").strip()
-    skills = TechStack.objects.all()
+    skills = TechStack.objects.prefetch_related('starred_by').all()
 
     if title_query:
         skills = skills.filter(title__icontains=title_query)
 
-    skills_json = serializers.serialize(
-    "json", skills, use_natural_foreign_keys=True)
+    data = []
+    for skill in skills:
+        starred_users = skill.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ", ".join([u.username for u in starred_users])
+
+        data.append({
+            "pk": str(skill.id),
+            "fields": {
+                "title": skill.title,
+                "category": skill.category,
+                "description": skill.description,
+                "icon_url": skill.icon_url,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+                }
+            })
     
-    return HttpResponse(skills_json, content_type="application/json")
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url="/login/") 
 def delete_skill(request, skill_id):
@@ -219,7 +255,7 @@ def logout_user(request):
     return response
 
 @login_required(login_url="/login/")
-def toggle_star(request, skill_id):
+def toggle_star_skill(request, skill_id):
     skill = get_object_or_404(TechStack, pk=skill_id)
 
     if request.method == "POST":
@@ -231,6 +267,20 @@ def toggle_star(request, skill_id):
             skill.starred_by.add(request.user)
 
     return redirect("main:show_skills")
+
+@login_required(login_url="/login/")
+def toggle_star_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.method == "POST":
+        # Kalau akun ini sudah pernah memberi star, batalkan star-nya.
+        # Kalau belum, tambahkan star.
+        if request.user in experience.starred_by.all():
+            experience.starred_by.remove(request.user)
+        else:
+            experience.starred_by.add(request.user)
+
+    return redirect("main:show_experience")
 
 def update_experience(request, experience_id):
     experience = get_object_or_404(Experience, pk=experience_id)
@@ -253,3 +303,39 @@ def update_experience(request, experience_id):
     }
     
     return render(request, "experiences_form.html", context)
+
+@require_POST
+def create_skill_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan skill."},
+            status=403,
+        )
+
+    form = TechStackForm(request.POST)
+    if form.is_valid():
+        skill = form.save()
+        return JsonResponse(
+            {"message": "Skill berhasil ditambahkan.", "pk": str(skill.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+@require_POST
+def create_experience_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan pengalaman."},
+            status=403,
+        )
+
+    form = ExperienceForm(request.POST)
+    if form.is_valid():
+        experience = form.save()
+        return JsonResponse(
+            {"message": "Experience berhasil ditambahkan.", "pk": str(experience.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)

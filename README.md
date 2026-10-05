@@ -90,6 +90,19 @@ Saya menggunakan chatGPT untuk membantu saya dalam memperbaiki CSS terutama peng
 Deklarasi AI:
 Untuk tugas 4, saya menggunakan ChatGPT untuk memperbaiki beberapa bagian minor di layout skill dan meminta bantuan untuk mengatasi beberapa error dengan mengirimkan error messagenya. Resource lain saya hanya geeksforgeeks dan tutorial 4 dalam pengerjaan tugas ini.
 
+### Tugas 5
+1. Jelaskan apa itu debouncing dan mengapa teknik ini penting diterapkan pada fitur pencarian yang menggunakan AJAX!
+= Debouncing adalah teknik untuk menunda sebuah fungsi hingga suatu jeda waktu berlalu tanpa event baru. Selama pengguna masih mengetik, timer sebelumnya dibatalkan dan dimulai lagi. Dengan demikian, browser hanya mengirim permintaan setelah pengguna berhenti mengetik selama sejenak.Teknik debouncing ini dapat mengurangi jumlah request ke server sehingga beban server menjadi lebih ringan dan fitu pencarian menjadi lebih efisien. 
+
+2. Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+= await adalah keyword yang hanya bisa digunakan di dalam async function dan berfungsi untuk “menunggu” Promise selesai diproses sebelum melanjutkan ke baris kode berikutnya. Tanpa await, sebuah Promise akan tetap berjalan di belakang layar dan kode berikutnya akan langsung dieksekusi tanpa menunggu hasilnya.
+
+3. Jelaskan apa itu serangan XSS (Cross-Site Scripting) dan mengapa data yang ditampilkan melalui AJAX/JavaScript lebih rentan terhadap serangan ini daripada data yang ditampilkan langsung melalui template Django!
+= Cross-Site Scripting (XSS) adalah serangan ketika penyerang berhasil menyisipkan kode JavaScript miliknya ke dalam halaman web yang kemudian dijalankan di browser pengguna lain. Serangan XSS lebih rentan pada data yang ditampilkan melalui AJAX karena template Django melakukan auto-escaping pada setiap { variabel }. Karakter seperti < dan > diubah menjadi &lt; dan &gt; sehingga browser menampilkannya sebagai teks biasa, bukan sebagai tag HTML.
+
+Deklarasi AI:
+Pada tugas 5, saya menggunakan DeepSeek untuk membantu saya merefactor kode template django bagian experience menjadi ajax. Selain itu, saya juga meminta AI untuk menemukan error yang terjadi mengenai mengapa serangan XSS tidak dapat ditangani, lalu error karena beberapa variabel belum disesuaikan dengan class CSSnya. Saya menyadari bahwa dengan mengirimkan beberapa bagian kode, AI masih kurang memahami konteks dan cakupan pembelajaran jadi over-engineering, jadi terkadang saya masih perlu menemukan errornya sendiri dan melakukan perbaikan manual.
+
 # AI Usage Log
 Dokumen ini mencatat penggunaan AI selama proses pengembangan website portfolio Django. AI digunakan sebagai alat bantu untuk memahami konsep, melakukan debugging, mengeksplorasi solusi, dan memperbaiki dokumentasi. Setiap solusi yang diberikan AI tetap diuji dan disesuaikan secara manual dengan kebutuhan project.
 
@@ -106,5 +119,7 @@ Dokumen ini mencatat penggunaan AI selama proses pengembangan website portfolio 
 | 2026-09-20 | AI disclosure dan dokumentasi                            | Membantu menyusun AI disclosure yang menjelaskan tools, strategi prompting, bagian yang dibantu AI, serta proses verifikasi manual.                                                                     | Membuat dokumentasi penggunaan AI secara transparan pada README dan membuat log penggunaan AI ini.
 | 2026-09-26 | Django update_experience error | Membantu menganalisis error didn't return an HttpResponse object dan menjelaskan bahwa view memiliki kondisi yang tidak mengembalikan response.                                                      | Memeriksa dan memperbaiki alur return pada update_experience serta menguji kembali form update. |
 | 2026-09-26 | Layout Skill card | Membantu merapikan struktur HTML dan CSS untuk description, star, tombol Edit Skill, dan delete modal. | Mengubah struktur template dan menyesuaikan CSS agar action buttons memiliki posisi dan spacing yang lebih baik. |
+| 2026-10-03 | Card JS sesuai template Django|	Membantu menyesuaikan buildExperienceCardElement agar DOM-nya identik dengan template experience sebelumnya |	Memperbaiki struktur card jadi .section-2.block (bukan experience-card), menambahkan status is_ongoing/status-done, dan menyesuaikan tombol Edit + delete modal. |
+| 2026-10-03| XSS Experience vs Skill | Mengirimkan kode create_skill_ajax, create_experience_ajax, dan kedua form untuk dianalisis. |	Menemukan bug indentasi di ExperienceForm — method clean_title, clean_category, clean_description ter-indent di dalam class Meta sehingga Django tidak memanggilnya. Memindahkan method ke luar class Meta agar validasi strip_tags berjalan. |
 
 Dengan demikian, AI digunakan sebagai tutor, brainstorming partner, dan debugging assistant, sedangkan implementasi akhir, pengujian, pemilihan solusi, dan penyesuaian dengan kebutuhan project dilakukan secara manual.

@@ -101,7 +101,7 @@
     </main>
 
     {% if user.is_superuser or is_editor %}
-    {% include "components/skill_form_modal.html" %}
+    {% include "components/skill_form_api.html" %}
     {% endif %}
 
     {% csrf_token %}
@@ -164,6 +164,20 @@
         return values.join(' ') || `Request failed (HTTP ${status}).`;
     }
 
+    function updateStarButton(button, skill) {
+        button.classList.toggle('is-starred', skill.is_starred);
+        button.title = skill.starred_by_names || 'Jadilah yang pertama memberi star';
+
+        const count = button.querySelector('.star-count');
+        if (count) count.textContent = skill.star_count;
+
+        const starIcon = button.querySelector('[aria-hidden="true"]');
+        const label = starIcon && starIcon.nextSibling;
+        if (label && label.nodeType === Node.TEXT_NODE) {
+            label.textContent = ` ${skill.is_starred ? 'Unstar' : 'Star'} `;
+        }
+    }
+
     // Membuat elemen card skill
     function buildSkillCardElement(skill) {
         const skillId = skill.id;
@@ -215,7 +229,7 @@
                         ${imageHtml} <span class="skill-title"> ${escapeHtml(skill.title)} </span> 
                         </summary> 
                         <div class="skill-info"> 
-                            <p> ${skill.description || ""} </p>
+                            <p> ${escapeHtml(skill.description || "")} </p>
                             ${actions} 
                         </div> `;
 
@@ -226,7 +240,7 @@
             detailsElement.className = "skill-card";
             detailsElement.innerHTML = ` 
                     <summary> <h3> ${escapeHtml(skill.title)} </h3> </summary> 
-                    <p> &gt; ${skill.description || ""} </p> 
+                    <p> &gt; ${escapeHtml(skill.description || "")} </p> 
                             ${actions} `;
 
                     return detailsElement;
@@ -296,8 +310,8 @@
         skillForm.reset();
         delete skillForm.dataset.mode;
         delete skillForm.dataset.id;
-        
-        const t = document.getElementById('skill-modal-title');
+
+        const t = document.getElementById('add-skill-modal-title');
         if (t) t.textContent = 'Tambah Skill';
         const btn = skillForm.querySelector('button[type="submit"]');
         if (btn) btn.textContent = 'Tambah Skill';
@@ -325,7 +339,7 @@
             skillForm.dataset.mode = 'edit';
             skillForm.dataset.id = skillId;
 
-            const t = document.getElementById('skill-modal-title');
+            const t = document.getElementById('add-skill-modal-title');
 
             if (t) t.textContent = 'Update Skill';
 
@@ -403,43 +417,38 @@
     }
 
     // event delegation
-    function bindGridDelegation(container) {
-        container.addEventListener('click', async function (event) {
-            const button = event.target.closest('button[data-action]');
-            if (!button || button.disabled) return;
+    gridContainer.addEventListener('click', async function (event) {
+        const button = event.target.closest('button[data-action]');
+        if (!button || button.disabled) return;
 
-            const action = button.dataset.action;
-            const id = button.dataset.id;
+        const action = button.dataset.action;
+        const id = button.dataset.id;
 
-            if (action === 'edit') {
-                await openSkillModalForEdit(id);
-                return;
-            }
+        if (action === 'edit') {
+            await openSkillModalForEdit(id);
+            return;
+        }
 
-            if (action === 'delete' && !window.confirm('Yakin ingin menghapus skill ini?')) return;
+        if (action === 'delete' && !window.confirm('Yakin ingin menghapus skill ini?')) return;
 
-            button.disabled = true;
-            try {
-                if (action === 'star') {
-                    await writeSkill(skillEndpoint(STAR_SKILL_ENDPOINT, id), 'POST');
-                    showToast('Berhasil', 'Status star diperbarui.', 'success');
-
-                } else if (action === 'delete') {
-                    await writeSkill(skillEndpoint(DETAIL_SKILL_ENDPOINT, id), 'DELETE');
-                    showToast('Berhasil', 'Skill dihapus.', 'success');
-                }
+        button.disabled = true;
+        try {
+            if (action === 'star') {
+                const updatedSkill = await writeSkill(
+                    skillEndpoint(STAR_SKILL_ENDPOINT, id), 'POST');
+                updateStarButton(button, updatedSkill);
+                showToast('Berhasil', 'Status star diperbarui.', 'success');
+            } else if (action === 'delete') {
+                await writeSkill(skillEndpoint(DETAIL_SKILL_ENDPOINT, id), 'DELETE');
+                showToast('Berhasil', 'Skill dihapus.', 'success');
                 await fetchSkills(searchInput.value.trim());
-                
-            } catch (error) {
-                showToast('Permintaan gagal', error.message, 'error');
-            } finally {
-                button.disabled = false;
             }
-        });
-    }
-    bindGridDelegation(technicalContainer);
-    bindGridDelegation(toolContainer);
-    bindGridDelegation(softContainer);
+        } catch (error) {
+            showToast('Permintaan gagal', error.message, 'error');
+        } finally {
+            button.disabled = false;
+        }
+    });
 
     // Start application
     fetchSkills(searchInput.value.trim());

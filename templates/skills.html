@@ -100,7 +100,7 @@
     </section>
     </main>
 
-    {% if user.is_superuser %}
+    {% if user.is_superuser or is_editor %}
     {% include "components/skill_form_modal.html" %}
     {% endif %}
 
@@ -127,6 +127,7 @@
     const softContainer = document.getElementById('soft-skills');
     const searchForm = document.getElementById('skill-search-form');
     const searchInput = document.getElementById('search-input');
+    const skillForm = document.getElementById('skill-form');
 
     function getCookie(name) {
         const prefix = `${name}=`;
@@ -288,7 +289,55 @@
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(apiErrorMessage(data, response.status));
         return data;
+    }
+
+    function openSkillModalForCreate() {
+        if (!skillForm) return;
+        skillForm.reset();
+        delete skillForm.dataset.mode;
+        delete skillForm.dataset.id;
+        
+        const t = document.getElementById('skill-modal-title');
+        if (t) t.textContent = 'Tambah Skill';
+        const btn = skillForm.querySelector('button[type="submit"]');
+        if (btn) btn.textContent = 'Tambah Skill';
+    }
+
+    const addSkillButton = document.querySelector('[popovertarget="add-skill-modal"]');
+
+    if (addSkillButton) {
+        addSkillButton.addEventListener('click', openSkillModalForCreate);
+    }
+
+    async function openSkillModalForEdit(skillId) {
+        if (!skillForm) return;
+        try {
+            const res = await fetch(skillEndpoint(DETAIL_SKILL_ENDPOINT, skillId), {
+                headers: { Accept: 'application/json' },
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const current = await res.json();
+
+            skillForm.querySelector('[name="title"]').value       = current.title || '';
+            skillForm.querySelector('[name="description"]').value = current.description || '';
+            skillForm.querySelector('[name="category"]').value    = current.category || '';
+            skillForm.querySelector('[name="icon_url"]').value    = current.icon_url || '';
+            skillForm.dataset.mode = 'edit';
+            skillForm.dataset.id = skillId;
+
+            const t = document.getElementById('skill-modal-title');
+
+            if (t) t.textContent = 'Update Skill';
+
+            const btn = skillForm.querySelector('button[type="submit"]');
+
+            if (btn) btn.textContent = 'Update Skill';
+
+            document.getElementById('add-skill-modal').showPopover();
+        } catch (error) {
+            showToast('Gagal memuat skill', error.message, 'error');
         }
+    }
 
     // Event Handlers untuk Form Search
         function searchSkills() {
@@ -308,11 +357,16 @@
         searchSkills();
     });
 
-    const skillForm = document.getElementById('skill-form');
-
     // Mengirim data form ke server
     async function addSkill(event) {
         event.preventDefault();
+        if (!skillForm) return;
+
+        const isEdit = skillForm.dataset.mode === 'edit';
+        const url = isEdit
+            ? skillEndpoint(DETAIL_SKILL_ENDPOINT, skillForm.dataset.id)
+            : BASE_SKILLS_ENDPOINT;
+        const method = isEdit ? 'PATCH' : 'POST';
 
         const submitButton = skillForm.querySelector('button[type="submit"]');
         submitButton.disabled = true;
@@ -323,15 +377,22 @@
                 ['title', 'description', 'category', 'icon_url']
                     .map(name => [name, fd.get(name)]));
 
-            await writeSkill(BASE_SKILLS_ENDPOINT, 'POST', payload);
+            await writeSkill(url, method, payload);
             skillForm.reset();
+            delete skillForm.dataset.mode;
+            delete skillForm.dataset.id;
 
             document.getElementById('add-skill-modal').hidePopover();
-            showToast('Berhasil', 'Skill baru berhasil ditambahkan!', 'success');
+            showToast('Berhasil',
+            isEdit ? 'Skill diperbarui.' : 'Skill baru berhasil ditambahkan.',
+            'success');
+
             await fetchSkills(searchInput.value.trim());
         } catch (error) {
             console.error('Error adding skill:', error);
-            showToast('Gagal menambahkan skill', 'Tidak dapat terhubung ke server. Silakan coba lagi.', 'error');
+            showToast(isEdit ? 'Gagal memperbarui skill' : 'Gagal menambahkan skill',
+            error.message,
+            'error',);
         } finally {
             submitButton.disabled = false;
         }
@@ -339,32 +400,6 @@
 
     if (skillForm) {
         skillForm.addEventListener('submit', addSkill);
-    }
-
-    async function editSkill(skillId) {
-        try {
-            const res = await fetch(skillEndpoint(DETAIL_SKILL_ENDPOINT, skillId), {
-                headers: { Accept: 'application/json' },
-            });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const current = await res.json();
-
-            const title = window.prompt('Judul skill:', current.title);
-            if (title === null) return;
-            const description = window.prompt('Deskripsi skill:', current.description || '');
-            if (description === null) return;
-
-            await writeSkill(
-                skillEndpoint(DETAIL_SKILL_ENDPOINT, skillId),
-                'PATCH',
-                { title: title.trim(), description: description.trim() },
-            );
-            showToast('Berhasil', 'Skill diperbarui.', 'success');
-            await fetchSkills(searchInput.value.trim());
-
-        } catch (error) {
-            showToast('Gagal memperbarui skill', error.message, 'error');
-        }
     }
 
     // event delegation
@@ -377,7 +412,7 @@
             const id = button.dataset.id;
 
             if (action === 'edit') {
-                await editSkill(id);
+                await openSkillModalForEdit(id);
                 return;
             }
 

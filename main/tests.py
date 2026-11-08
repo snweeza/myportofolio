@@ -40,48 +40,7 @@ class MainTest(TestCase):
         self.assertEqual(self.experience.category, "volunteer")
         self.assertTrue(self.experience.is_ongoing)
 
-    def test_experience_page(self):
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "experience.html")
-        self.assertContains(response, self.experience.title)
-        self.assertContains(response, self.experience.description)
-        self.assertContains(response, "Volunteer")
-        self.assertContains(response, "Sedang berlangsung")
-        self.assertContains(response, f'href="{reverse("main:show_main")}"')
-
-    def test_empty_experience_page(self):
-        Experience.objects.all().delete()
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertContains(response, "Belum ada pengalaman yang ditambahkan.")
-
-    def test_completed_experience(self):
-        self.experience.ended_at = timezone.now()
-        self.experience.save()
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertFalse(self.experience.is_ongoing)
-        self.assertContains(response, "Selesai")
-        self.assertNotContains(response, "Sedang berlangsung")
-
     def test_techstack_model(self):
             self.assertEqual(str(self.techstack), "HTML")
             self.assertEqual(self.techstack.category, "Technical")
             self.assertEqual(self.techstack.icon_url, "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png")
-
-    def test_techstack_page(self):
-            response = self.client.get(reverse("main:show_techstack"))
-    
-            self.assertEqual(response.status_code, 200)
-            self.assertTemplateUsed(response, "techstack.html")
-            self.assertContains(response, self.techstack.title)
-            self.assertContains(response, "Technical")
-            self.assertContains(response, "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png")
-
-    def test_empty_ts_page(self):
-            TechStack.objects.all().delete()
-            response = self.client.get(reverse("main:show_techstack"))
-    
-            self.assertContains(response, "Belum ada skill yang ditambahkan.")

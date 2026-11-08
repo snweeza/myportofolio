@@ -194,7 +194,12 @@ def delete_skill(request, skill_id):
 
     return redirect("main:show_skills")
 
+@login_required(login_url="/login/") 
 def update_skill(request, skill_id):
+    is_editor = request.user.groups.filter(name="Editor").exists()
+    if not (request.user.is_superuser or is_editor):
+        raise PermissionDenied
+    
     skill = get_object_or_404(TechStack, pk=skill_id)
 
     if request.method == "POST":
@@ -208,15 +213,15 @@ def update_skill(request, skill_id):
     else:
         form = TechStackForm(instance=skill)
     
-        context = {
-            "name": "Nafeeza Arwatabina",
-            "skill_technical" : "Technical",
-            "skill_soft" : "Soft Skills",
-            "skill_tool" : "Tools",
-            "form": form,
-            "skill": skill,
-        }
-        return render(request, "skills_form.html", context)
+    context = {
+        "name": "Nafeeza Arwatabina",
+        "skill_technical" : "Technical",
+        "skill_soft" : "Soft Skills",
+        "skill_tool" : "Tools",
+        "form": form,
+        "skill": skill,
+    }
+    return render(request, "skills_form.html", context)
 
 def register(request):
     form = UserCreationForm(request.POST or None)

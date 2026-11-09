@@ -1,0 +1,66 @@
+<div id="add-skill-modal"
+     class="object-form-modal"
+     popover="auto"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="add-skill-modal-title">
+    <button type="button"
+            class="object-form-modal__backdrop"
+            popovertarget="add-skill-modal"
+            popovertargetaction="hide"
+            aria-label="Tutup form skill"></button>
+
+    <div class="object-form-modal__content">
+        <button type="button"
+                class="object-form-modal__close"
+                popovertarget="add-skill-modal"
+                popovertargetaction="hide"
+                aria-label="Tutup form skill">×</button>
+
+        <h2 id="add-skill-modal-title">Tambah Skill Baru</h2>
+
+        <form id="skill-form" class="object-form" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_title">Judul</label>
+                <input type="text" name="title" id="id_title"
+                       required maxlength="100" autocomplete="off">
+                <p class="form-error" data-error-for="title" hidden></p>
+            </div>
+
+            <div class="form-group">
+                <label for="id_description">Deskripsi</label>
+                <textarea name="description" id="id_description" rows="3"></textarea>
+                <p class="form-error" data-error-for="description" hidden></p>
+            </div>
+
+            <div class="form-group">
+                <label for="id_category">Kategori</label>
+                <select name="category" id="id_category" required>
+                    <option value="Technical">Technical</option>
+                    <option value="Tool">Tool</option>
+                    <option value="Soft Skill">Soft Skill</option>
+                </select>
+                <p class="form-error" data-error-for="category" hidden></p>
+            </div>
+
+            <div class="form-group">
+                <label for="id_icon_url">Icon URL</label>
+                <input type="url" name="icon_url" id="id_icon_url"
+                       placeholder="https://..." autocomplete="off">
+                <p class="form-error" data-error-for="icon_url" hidden></p>
+            </div>
+
+            <div class="object-form-modal__actions">
+                <button type="button"
+                        class="button button-secondary"
+                        popovertarget="add-skill-modal"
+                        popovertargetaction="hide">Batal</button>
+                <button type="submit" class="button" id="skill-modal-submit">
+                    Tambah Skill
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

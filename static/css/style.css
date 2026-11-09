@@ -498,22 +498,32 @@ body {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
     box-sizing: border-box;
     padding: 0.7rem;
     border: 1px solid var(--accent-dark);
     border-radius: var(--radius);
     font: inherit;
+    color: var(--accent-dark);
+    background-color: #fff;
     transition:
         border-color 0.2s ease,
         outline-color 0.2s ease;
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
     outline: 2px solid var(--accent-dark);
     border-color: var(--accent-dark);
+}
+
+.form-group select {
+    min-height: 48px;
+    padding-right: 2.5rem;
+    cursor: pointer;
 }
 
 .form-error {
@@ -988,3 +998,19 @@ body {
         padding: 0;
     }
 }
+/* Spacing for skill cards and their actions */
+.skill-card p {
+    margin: 0.65rem 0 0;
+}
+
+.skill-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.85rem;
+}
+
+.skill-info .skill-actions {
+    padding-top: 0.25rem;
+}
+

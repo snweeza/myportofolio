@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, Textarea, URLInput, DateTimeInput
+from django.forms import ModelForm, TextInput, Textarea, URLInput, DateTimeInput, Select
 
 from main.models import Experience, TechStack
 from django.core.exceptions import ValidationError
@@ -36,11 +36,7 @@ class ExperienceForm(ModelForm):
                     "rows": 3,
                 }
             ),
-            "category": TextInput(
-                attrs={
-                    "placeholder": "volunteer, part-time, full-time",
-                }
-            ),
+            "category": Select(),
             "photo": URLInput(
                 attrs={
                     "placeholder" : "https://drive.google.com/thumbnail?id=...&sz=w1000",

@@ -3,7 +3,7 @@ NPM: 2506604573
 Kelas: PBP A
 
 # Deskripsi Website
-Website portofolio pribadi yang digunakan untuk menampilkan profil, pengalaman, dan skills saya. Website ini dibuat dengan Django dan menerapkan konsep MVT untuk mengelola serta menampilkan data secara dinamis. Proyek ini menjadi media untuk mempraktikkan penggunaan Django Model, View, Template, ModelForm, database, serta fitur CRUD dan pencarian data untuk memenuhi tugas individu pada matkul Pemrograman Berbasis Aplikasi.
+Website portofolio pribadi yang digunakan untuk menampilkan profil, pengalaman, dan skills saya. Website ini dibuat dengan pola MVT (Model–View–Template) untuk pengelolaan data, serta Django REST Framework (DRF) untuk menyediakan API JSON yang dikonsumsi halaman melalui AJAX (fetch) sehingga data dapat ditampilkan, dicari, ditambah, diubah, dihapus, dan diberi star tanpa memuat ulang halaman. Proyek ini juga menerapkan autentikasi pengguna, permission berbasis peran (pengunjung, pengguna biasa, Editor, dan pemilik), CSRF protection, serta escaping pada nilai teks yang disisipkan ke HTML, sebagai pemenuhan tugas individu mata kuliah Pemrograman Berbasis Platform.
 
 # Set up
 1. Clone Repository -> menduplikasi seluruh konten dari repositori yang ada di GitHub ke komputer lokal
@@ -90,8 +90,6 @@ Saya menggunakan chatGPT untuk membantu saya dalam memperbaiki CSS terutama peng
 Deklarasi AI:
 Untuk tugas 4, saya menggunakan ChatGPT untuk memperbaiki beberapa bagian minor di layout skill dan meminta bantuan untuk mengatasi beberapa error dengan mengirimkan error messagenya. Resource lain saya hanya geeksforgeeks dan tutorial 4 dalam pengerjaan tugas ini.
 
-<<<<<<< HEAD
-=======
 ### Tugas 5
 1. Jelaskan apa itu debouncing dan mengapa teknik ini penting diterapkan pada fitur pencarian yang menggunakan AJAX!
 = Debouncing adalah teknik untuk menunda sebuah fungsi hingga suatu jeda waktu berlalu tanpa event baru. Selama pengguna masih mengetik, timer sebelumnya dibatalkan dan dimulai lagi. Dengan demikian, browser hanya mengirim permintaan setelah pengguna berhenti mengetik selama sejenak.Teknik debouncing ini dapat mengurangi jumlah request ke server sehingga beban server menjadi lebih ringan dan fitu pencarian menjadi lebih efisien. 
@@ -105,7 +103,25 @@ Untuk tugas 4, saya menggunakan ChatGPT untuk memperbaiki beberapa bagian minor 
 Deklarasi AI:
 Pada tugas 5, saya menggunakan DeepSeek untuk membantu saya merefactor kode template django bagian experience menjadi ajax. Selain itu, saya juga meminta AI untuk menemukan error yang terjadi mengenai mengapa serangan XSS tidak dapat ditangani, lalu error karena beberapa variabel belum disesuaikan dengan class CSSnya. Saya menyadari bahwa dengan mengirimkan beberapa bagian kode, AI masih kurang memahami konteks dan cakupan pembelajaran jadi over-engineering, jadi terkadang saya masih perlu menemukan errornya sendiri dan melakukan perbaikan manual.
 
->>>>>>> master
+### Tugas 6
+1. Jelaskan apa yang dimaksud dengan REST dan mengapa mengembalikan JSON saja belum cukup untuk menyebut sebuah API sebagai RESTful! Jelaskan pula perbedaan PUT dan PATCH beserta contoh kapan masing-masing sebaiknya digunakan!
+= REST adalah gaya arsitektur untuk merancang web API yang menggunakan data sebagai resource dan HTTP method yang menyatakan tindakan, seperti GET untuk membaca, POST untuk membuat, PUT/PATCH untuk mengubah, dan DELETE untuk menghapus. REST juga memiliki prinsip seperti client-server, stateless, dan penggunaan representasi data, contohnya adalah JSON. Mengembalikan data dalam format JSON itu belum cukup untuk disebut RESTful karena REST tidak hanya mengatur format pertukaran data, tetapi juga cara API berkomunikasi dan mengelola resource sesuai prinsip-prinsip REST.
+
+Method PUT digunakan untuk mengganti keseluruhan representasi resource, sedangkan PATCH digunakan untuk memperbarui sebagian field. Contoh: PUT digunakan saat ingin mengganti seluruh data profil pengguna, sedangkan PATCH digunakan saat hanya ingin mengubah alamat email tanpa mengubah field lainnya.
+
+2. Jelaskan peran serializer pada Django REST Framework! Apa keuntungannya dibandingkan merakit dictionary secara manual dengan JsonResponse seperti pada Tutorial 05?
+= Serializer pada Django REST Framework berfungsi untuk mengubah data dari model menjadi format yang dapat dikirim melalui API ataupun sebaliknya, yaitu mengubah data dari request menjadi model yang dapat disimpan di database. Jika dibandingkan dengan merakit dictionary secara manual menggunakan JsonResponse, serializer pada Django REST Framework menyediakan validasi data, konversi tipe data, serta proses serialisasi dan deserialisasi secara otomatis. Dengan demikian, kode menjadi lebih terstruktur, konsisten, dan mudah dikelola.
+
+3. Jelaskan perbedaan autentikasi dan otorisasi pada Django REST Framework! Mengapa hak akses harus diperiksa dengan permission class di server, bukan hanya dengan menyembunyikan tombol di template?
+= Autentikasi adalah proses untuk memastikan identitas pengguna yang mengakses API, sedangkan otorisasi adalah proses menentukan apakah pengguna tersebut memiliki izin untuk melakukan tindakan tertentu. Pemeriksaan hak akses harus dilakukan menggunakan permission class di server karena tampilan pada template hanya mengatur apa yang terlihat oleh pengguna, bukan membatasi akses sebenarnya. Pengguna masih dapat mengirim request secara langsung melalui browser atau Postman meskipun tombol tertentu disembunyikan.
+
+4. Jelaskan mengapa permintaan yang mengubah data tetap memerlukan token CSRF ketika API memakai SessionAuthentication! Mengapa test yang memakai force_authenticate tidak cukup untuk membuktikan bahwa perlindungan CSRF berjalan?
+= Ketika menggunakan SessionAuthentication, Django REST Framework memanfaatkan session dan cookie untuk mengenali pengguna yang sudah login. Karena browser dapat mengirimkan cookie secara otomatis, masih terdapat risiko CSRF sehingga untuk permintaan yang mengubah data, masih tetap diperlukan token CSRF.
+Sementara itu, penggunaan force_authenticate pada test hanya memudahkan dalam menguji permission class, tetapi tidak cukup untuk membuktikan perlindungan CSRF karena tidak memastikan apakah server benar-benar menolak request yang tidak menggunakan token CSRF. Untuk menguji perlindungan CSRF, diperlukan pengujian menggunakan client dengan enforce_csrf_checks=True.
+
+Deklarasi AI:
+Pada tugas 6, saya menggunakan DeepSeek untuk membantu saya dalam merefactor drf ajax terutama untuk memahami mengapa beberapa bagian masih terasa seperti ke reload, beberapa bug ajax, pembuatan testcase, dan merancang modal edit baru di file html baru, yaitu skill_form_api. Beberapa bagian masih perlu dilakukan penyesuaian dan pengujian manual karena terdapat masalah minor, seperti test case yang gagal, dimana saat ditelusuri ternyata disebabkan ketidaktahuan AI mengenai fields model dan perbaikan CSS.
+
 # AI Usage Log
 Dokumen ini mencatat penggunaan AI selama proses pengembangan website portfolio Django. AI digunakan sebagai alat bantu untuk memahami konsep, melakukan debugging, mengeksplorasi solusi, dan memperbaiki dokumentasi. Setiap solusi yang diberikan AI tetap diuji dan disesuaikan secara manual dengan kebutuhan project.
 
@@ -122,10 +138,11 @@ Dokumen ini mencatat penggunaan AI selama proses pengembangan website portfolio 
 | 2026-09-20 | AI disclosure dan dokumentasi                            | Membantu menyusun AI disclosure yang menjelaskan tools, strategi prompting, bagian yang dibantu AI, serta proses verifikasi manual.                                                                     | Membuat dokumentasi penggunaan AI secara transparan pada README dan membuat log penggunaan AI ini.
 | 2026-09-26 | Django update_experience error | Membantu menganalisis error didn't return an HttpResponse object dan menjelaskan bahwa view memiliki kondisi yang tidak mengembalikan response.                                                      | Memeriksa dan memperbaiki alur return pada update_experience serta menguji kembali form update. |
 | 2026-09-26 | Layout Skill card | Membantu merapikan struktur HTML dan CSS untuk description, star, tombol Edit Skill, dan delete modal. | Mengubah struktur template dan menyesuaikan CSS agar action buttons memiliki posisi dan spacing yang lebih baik. |
-<<<<<<< HEAD
-=======
 | 2026-10-03 | Card JS sesuai template Django|	Membantu menyesuaikan buildExperienceCardElement agar DOM-nya identik dengan template experience sebelumnya |	Memperbaiki struktur card jadi .section-2.block (bukan experience-card), menambahkan status is_ongoing/status-done, dan menyesuaikan tombol Edit + delete modal. |
 | 2026-10-03| XSS Experience vs Skill | Mengirimkan kode create_skill_ajax, create_experience_ajax, dan kedua form untuk dianalisis. |	Menemukan bug indentasi di ExperienceForm — method clean_title, clean_category, clean_description ter-indent di dalam class Meta sehingga Django tidak memanggilnya. Memindahkan method ke luar class Meta agar validasi strip_tags berjalan. |
->>>>>>> master
+| 2026-11-08 | Star masih memicu reload | Menjelaskan bahwa `fetchSkills()` setelah star menghapus & membuat ulang seluruh kartu sehingga terlihat seperti reload; API `skill_star` sudah mengembalikan data terbaru sehingga cukup update tombol. | Menghapus `fetchSkills()` pada cabang star; menambahkan helper `updateStarButton(button, skill)` yang mengubah class `is-starred`, angka star, teks Star/Unstar, dan tooltip dari respons API. |
+| 2026-11-08 | Bug tombol `+` bisa jadi Edit | Menjelaskan bahwa `popovertarget` hanya membuka modal tanpa reset form, sehingga `dataset.mode='edit'` tertinggal dan tombol `+` bisa melakukan PATCH. | Menambahkan listener `click` pada tombol `+` yang memanggil `openSkillModalForCreate` untuk mereset form dan menghapus `dataset.mode`/`dataset.id`. |
+| 2026-11-08 | Test `APITestCase` untuk skill | Membantu menyusun test mengikuti pola `ProjectAPITest`: pengunjung & pengguna biasa ditolak menulis, Editor boleh PATCH tapi tidak POST/DELETE, pemilik boleh semua, validasi input, star toggle, dan CSRF dengan `APIClient(enforce_csrf_checks=True)` + `.login()`. | Menulis `SkillAPITest` di `main/tests_skill.py`; memeriksa isi database (`refresh_from_db`, `count`) pada test penolakan; menyesuaikan `setUp` dengan `Group.objects.get_or_create(name="Editor")`. |
+| 2026-11-08 | Modal create/edit skill | Membantu merancang modal `skill_form_api.html` dengan class lama (`object-form-modal*`) agar CSS tidak hancur, field manual (bukan `{{ form }}`) agar bisa diisi dari JSON saat edit, dan `dataset.mode`/`dataset.id` untuk membedakan create vs edit. | Membuat `components/skill_form_api.html` baru (tidak menimpa `skill_form_modal.html` lama); menambahkan `openSkillModalForCreate` dan `openSkillModalForEdit`; `addSkill` memilih `POST` atau `PATCH` berdasarkan `dataset.mode`. |
 
 Dengan demikian, AI digunakan sebagai tutor, brainstorming partner, dan debugging assistant, sedangkan implementasi akhir, pengujian, pemilihan solusi, dan penyesuaian dengan kebutuhan project dilakukan secara manual.
